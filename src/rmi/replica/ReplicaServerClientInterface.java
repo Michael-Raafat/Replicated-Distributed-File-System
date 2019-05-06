@@ -22,7 +22,7 @@ public interface ReplicaServerClientInterface extends Remote {
 	public WriteMsg write(long txnID, long msgSeqNum, FileContent data)
 											 throws RemoteException, IOException;
 	
-	public FileContent read(String fileName) throws FileNotFoundException,
+	public FileContent read(long txnID, String fileName) throws FileNotFoundException,
 													IOException, RemoteException;
 	
 	/**
