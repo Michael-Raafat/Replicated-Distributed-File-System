@@ -6,7 +6,7 @@ import java.util.List;
 import data.FileContent;
 import data.ReplicaLoc;
 
-public interface ReplicaServerMasterInterface {
+public interface ReplicaServerMasterInterface  extends ReplicaInf{
 	
 	public void createFile(FileContent data) throws RemoteException;
 	

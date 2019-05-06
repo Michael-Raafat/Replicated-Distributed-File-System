@@ -5,7 +5,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public interface ReplicaServerInterface extends Remote {
+public interface ReplicaServerInterface extends ReplicaInf {
 	
 	public boolean aqcuireLock(String fileName) throws RemoteException;
 	

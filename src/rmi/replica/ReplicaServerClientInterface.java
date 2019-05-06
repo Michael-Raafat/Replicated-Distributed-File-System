@@ -8,7 +8,7 @@ import data.FileContent;
 import data.WriteMsg;
 import exceptions.MessageNotFoundException;
 
-public interface ReplicaServerClientInterface extends Remote {
+public interface ReplicaServerClientInterface extends ReplicaInf {
 	/**
 	 * 
 	 * @param txnID: the ID of the transaction to which this message relates
