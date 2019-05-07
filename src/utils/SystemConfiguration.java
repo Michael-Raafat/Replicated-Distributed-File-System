@@ -12,7 +12,7 @@ public class SystemConfiguration {
 	
 	private int numberOfReplicas;
 	private int numberOfClients;
-	private String[] filePaths, writersAdd;
+	private String[] filePaths, serverAdds;
 	/**
 	 * server properties if false
 	 * cleint properties if true
@@ -46,9 +46,33 @@ public class SystemConfiguration {
 			    	System.out.println("Error! missing number of clients!");
 			    	return;
 				}
+				filePaths = new String[numberOfClients];
 				for (int i = 0; i < numberOfClients; i++) {
 					if (properties.containsKey("client" + i)) {
-						
+						filePaths[i] = properties.get("client" + i ).trim();
+					} else {
+						error = true;
+				    	System.out.println("Error! missing file path of client!");
+				    	return;
+					}
+				}
+			} else {
+				if (properties.containsKey("number.of.replicas")) {
+					numberOfReplicas = Integer.parseInt(
+							properties.get("number.of.replicas").trim());
+				} else {
+					error = true;
+			    	System.out.println("Error! missing number of replicas!");
+			    	return;
+				}
+				serverAdds = new String[numberOfReplicas];
+				for (int i = 0; i < numberOfReplicas; i++) {
+					if (properties.containsKey("server" + i)) {
+						serverAdds[i] = properties.get("server" + i ).trim();
+					} else {
+						error = true;
+				    	System.out.println("Error! missing ip address of server");
+				    	return;
 					}
 				}
 			}
@@ -56,4 +80,27 @@ public class SystemConfiguration {
 	    	e.printStackTrace();
 	    }
 	}
+	public int getNumberOfReplicas() {
+		return numberOfReplicas;
+	}
+	public int getNumberOfClients() {
+		return numberOfClients;
+	}
+	public String[] getFilePaths() {
+		return filePaths;
+	}
+	public String[] getServerAdds() {
+		return serverAdds;
+	}
+	public boolean isClient() {
+		return client;
+	}
+	public String getMasterAdd() {
+		return masterAdd;
+	}
+	public boolean isError() {
+		return error;
+	}
+	
+	
 }

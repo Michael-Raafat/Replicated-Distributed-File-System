@@ -4,9 +4,9 @@ import java.io.Serializable;
 public class FileContent implements Serializable {
 	
 	private String filename;
-	private byte[] data;
+	private String data;
 	
-	public FileContent(String filename, byte[] data) {
+	public FileContent(String filename, String data) {
 		this.data = data;
 		this.filename = filename;
 	}
@@ -19,11 +19,11 @@ public class FileContent implements Serializable {
 		this.filename = filename;
 	}
 
-	public byte[] getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(byte[] data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 	
