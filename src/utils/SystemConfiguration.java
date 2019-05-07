@@ -10,7 +10,7 @@ import java.util.List;
 public class SystemConfiguration {
 	
 	
-	private int numberOfReplicas;
+	private int numberOfServers;
 	private int numberOfClients;
 	private String[] filePaths, serverAdds;
 	/**
@@ -57,16 +57,16 @@ public class SystemConfiguration {
 					}
 				}
 			} else {
-				if (properties.containsKey("number.of.replicas")) {
-					numberOfReplicas = Integer.parseInt(
-							properties.get("number.of.replicas").trim());
+				if (properties.containsKey("number.of.servers")) {
+					numberOfServers = Integer.parseInt(
+							properties.get("number.of.servers").trim());
 				} else {
 					error = true;
-			    	System.out.println("Error! missing number of replicas!");
+			    	System.out.println("Error! missing number of servers!");
 			    	return;
 				}
-				serverAdds = new String[numberOfReplicas];
-				for (int i = 0; i < numberOfReplicas; i++) {
+				serverAdds = new String[numberOfServers];
+				for (int i = 0; i < numberOfServers; i++) {
 					if (properties.containsKey("server" + i)) {
 						serverAdds[i] = properties.get("server" + i ).trim();
 					} else {
@@ -77,11 +77,12 @@ public class SystemConfiguration {
 				}
 			}
 		} catch (Exception e) { 
+			error = true;
 	    	e.printStackTrace();
 	    }
 	}
 	public int getNumberOfReplicas() {
-		return numberOfReplicas;
+		return numberOfServers;
 	}
 	public int getNumberOfClients() {
 		return numberOfClients;
