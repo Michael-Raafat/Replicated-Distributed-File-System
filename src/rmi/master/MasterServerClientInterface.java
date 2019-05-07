@@ -10,7 +10,6 @@ import data.ReplicaLoc;
 import data.WriteMsg;
 
 public interface MasterServerClientInterface extends Remote {
-
 	/**
 	 * Read file from server
 	 * 
@@ -22,7 +21,6 @@ public interface MasterServerClientInterface extends Remote {
 	 */
 	public List<ReplicaLoc> read(String fileName) throws FileNotFoundException,
 													 IOException, RemoteException;
-
 	/**
 	 * Start a new write transaction
 	 * 
@@ -31,14 +29,5 @@ public interface MasterServerClientInterface extends Remote {
 	 * @throws RemoteException
 	 * @throws IOException
 	 */
-	public WriteMsg write(String fileName) throws RemoteException, IOException;
-	
-	/**
-	 * locating the primary replica
-	 * @param fileName
-	 * @return replica location
-	 * @throws RemoteException
-	 * @throws FileNotFoundException
-	 */
-	public ReplicaLoc assignPrimaryReplica(String fileName) throws FileNotFoundException,RemoteException; 
+	public WriteMsg write(String fileName) throws FileNotFoundException, RemoteException, IOException;
 }
