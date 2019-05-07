@@ -10,7 +10,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
-import data.Args;
+import args.Args;
+import args.ClientArgs;
 
 public class SSHConnection {
 	private ChannelExec p;
@@ -37,7 +38,7 @@ public class SSHConnection {
 	    	
 			
 			String jar;
-			if (args.isClient()) {
+			if (args instanceof ClientArgs) {
 				jar = RMI_CLIENT;
 			} else {
 				jar = RMI_MASTER;

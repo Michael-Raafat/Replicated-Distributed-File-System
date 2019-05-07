@@ -10,15 +10,19 @@ import java.util.List;
 public class SystemConfiguration {
 	
 	
-	private int numberOfReplicas;
+	private int numberOfServers;
 	private int numberOfClients;
 	private String[] filePaths, serverAdds;
 	/**
 	 * server properties if false
-	 * client properties if true
+	 * cleint properties if true
 	 */
 	private boolean client;
 	private String masterAdd;
+	private String masterPort;
+	private String masterDir;
+	private String masterUsername;
+	private String masterPassword;
 	private boolean error = false;
 	public SystemConfiguration (String filename, boolean client) {
 		this.client = client;
@@ -31,6 +35,21 @@ public class SystemConfiguration {
 				properties.put(s.substring(0, s.indexOf("=")), s.substring(s.indexOf("=") + 1));
 			}
 			if (client) {
+				if (properties.containsKey("master.server.port")) {
+					masterPort = properties.get("master.server.port");
+				} else {
+					error = true;
+			    	System.out.println("Error! missing port of main server!");
+			    	return;
+				}
+				if (properties.containsKey("master.server.dir")) {
+					masterDir = properties.get("master.server.dir");
+				} else {
+					error = true;
+			    	System.out.println("Error! missing dir of main server!");
+			    	return;
+				}
+				
 				if (properties.containsKey("master.server.ip")) {
 					masterAdd = properties.get("master.server.ip");
 				} else {
@@ -57,16 +76,16 @@ public class SystemConfiguration {
 					}
 				}
 			} else {
-				if (properties.containsKey("number.of.replicas")) {
-					numberOfReplicas = Integer.parseInt(
-							properties.get("number.of.replicas").trim());
+				if (properties.containsKey("number.of.servers")) {
+					numberOfServers = Integer.parseInt(
+							properties.get("number.of.servers").trim());
 				} else {
 					error = true;
-			    	System.out.println("Error! missing number of replicas!");
+			    	System.out.println("Error! missing number of servers!");
 			    	return;
 				}
-				serverAdds = new String[numberOfReplicas];
-				for (int i = 0; i < numberOfReplicas; i++) {
+				serverAdds = new String[numberOfServers];
+				for (int i = 0; i < numberOfServers; i++) {
 					if (properties.containsKey("server" + i)) {
 						serverAdds[i] = properties.get("server" + i ).trim();
 					} else {
@@ -77,11 +96,12 @@ public class SystemConfiguration {
 				}
 			}
 		} catch (Exception e) { 
+			error = true;
 	    	e.printStackTrace();
 	    }
 	}
 	public int getNumberOfReplicas() {
-		return numberOfReplicas;
+		return numberOfServers;
 	}
 	public int getNumberOfClients() {
 		return numberOfClients;
@@ -101,4 +121,21 @@ public class SystemConfiguration {
 	public boolean isError() {
 		return error;
 	}
+	public int getNumberOfServers() {
+		return numberOfServers;
+	}
+	public String getMasterPort() {
+		return masterPort;
+	}
+	public String getMasterDir() {
+		return masterDir;
+	}
+	public String getMasterUsername() {
+		return masterUsername;
+	}
+	public String getMasterPassword() {
+		return masterPassword;
+	}
+	
+	
 }
