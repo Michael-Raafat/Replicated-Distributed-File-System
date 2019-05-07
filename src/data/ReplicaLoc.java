@@ -5,10 +5,13 @@ public class ReplicaLoc implements Serializable {
 	
 	private long id;
 	private String address;
-	
-	public ReplicaLoc(long id, String address) {
+	private String port;
+	private boolean isAlive;
+	public ReplicaLoc(long id, String address, String port, boolean isAlive) {
 		this.id = id;
 		this.address = address;
+		this.port = port;
+		this.isAlive = isAlive;
 	}
 
 	public long getId() {
@@ -26,4 +29,22 @@ public class ReplicaLoc implements Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
+	public String getPort() {
+		return port;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+	}
+
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
+	
+	
 }

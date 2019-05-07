@@ -13,6 +13,7 @@ public class SystemConfiguration {
 	private int numberOfServers;
 	private int numberOfClients;
 	private String[] filePaths, serverAdds;
+	private String[] clientUserNames, clientPasswords, clientAdds;
 	/**
 	 * server properties if false
 	 * cleint properties if true
@@ -66,14 +67,41 @@ public class SystemConfiguration {
 			    	return;
 				}
 				filePaths = new String[numberOfClients];
+				clientUserNames = new String[numberOfClients];
+				clientPasswords = new String[numberOfClients];
 				for (int i = 0; i < numberOfClients; i++) {
-					if (properties.containsKey("client" + i)) {
+					if (properties.containsKey("client" + i + ".file")) {
 						filePaths[i] = properties.get("client" + i ).trim();
 					} else {
 						error = true;
 				    	System.out.println("Error! missing file path of client!");
 				    	return;
 					}
+					if (properties.containsKey("client" + i)) {
+			    		 String kol = properties.get("client" + i);
+			    		 int indexU = kol.indexOf("@");
+			    		 if (indexU == -1) {
+			    			 indexU = kol.length();
+			    		 }
+			    		 String name = kol.substring(0, indexU);
+			    		 
+			    		 int indexA = kol.indexOf(" ");
+			    		 if (indexA == -1) {
+			    			 indexA = kol.length();
+			    		 }
+			    		 String add = kol.substring(indexU + 1, indexA);
+			    		 clientUserNames[i] = name;
+			    		 clientAdds[i] = add;
+			    		 if (indexA != kol.length()) {
+			    			 clientPasswords[i] = kol.substring(indexA + 1);
+			    		 } else {
+			    			 clientPasswords[i] = "";
+			    		 }
+			    	  } else {
+			    		  error = true;
+			    		  System.out.println("Missing client with tag 'client" + i + "'");
+			    		  return;
+			    	  }
 				}
 			} else {
 				if (properties.containsKey("number.of.servers")) {
@@ -135,6 +163,15 @@ public class SystemConfiguration {
 	}
 	public String getMasterPassword() {
 		return masterPassword;
+	}
+	public String[] getClientUserNames() {
+		return clientUserNames;
+	}
+	public String[] getClientPasswords() {
+		return clientPasswords;
+	}
+	public String[] getClientAdds() {
+		return clientAdds;
 	}
 	
 	

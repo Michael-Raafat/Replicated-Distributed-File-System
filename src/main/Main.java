@@ -6,6 +6,7 @@ import java.util.List;
 import com.jcraft.jsch.ChannelExec;
 
 import args.Args;
+import args.ClientArgs;
 import args.MasterArgs;
 import utils.SSHConnection;
 import utils.SystemConfiguration;
@@ -28,6 +29,11 @@ public class Main {
 				System.out.println("Failed to create server, terminating process !");
 				System.exit(-1);
 			}
+			SSHConnection clientsCon =createClients(c);
+			if (mainError) {
+				System.out.println("Failed to create server, terminating process !");
+				System.exit(-1);
+			}
 		} else {
 			System.out.println("Invalid Configuration");
 		}
@@ -39,8 +45,9 @@ public class Main {
 		SSHConnection con = new SSHConnection();
 		 try {
 			Args args = new MasterArgs(c.getMasterAdd(), c.getMasterPort(), c.getMasterDir());
-			if (con.openConnection(c.getMasterAdd(), c.getMasterPassword(), c.getMasterUsername(), args, c.getMasterDir())) {
-				System.out.println("Created !");
+			String path = System.getProperty("user.dir");
+			if (con.openConnection(c.getMasterAdd(), c.getMasterPassword(), c.getMasterUsername(), args, path)) {
+				System.out.println("Master Created !");
 			}
          }catch (Exception e) {
         	mainError = true;
@@ -50,8 +57,21 @@ public class Main {
 		return con;
 	}
 	
-	public static void createClients(SystemConfiguration c) {
-		
+	public static SSHConnection createClients(SystemConfiguration c) {
+		SSHConnection con = new SSHConnection();
+		for (int i = 0; i < c.getNumberOfClients(); i++) {
+			try {
+				Args args = new ClientArgs(c.getFilePaths()[i]);
+				String path = System.getProperty("user.dir");
+				if (con.openConnection(c.getClientAdds()[i], c.getClientPasswords()[i], c.getClientUserNames()[i], args, path)) {
+					System.out.println("Clients Created !");
+				}
+			} catch (Exception e) {
+        		mainError = true;
+				System.out.println(e.getMessage());
+			}
+		}
+		return con;
 	}
 	
 	
