@@ -23,33 +23,31 @@ public class Main {
 		}
 		SystemConfiguration c = new SystemConfiguration("clients.properties", true);
 		if (!c.isError()) {
-			createMaster(c);
+			SSHConnection masterCon =createMaster(c);
 			if (mainError) {
 				System.out.println("Failed to create server, terminating process !");
 				System.exit(-1);
 			}
-			
 		} else {
 			System.out.println("Invalid Configuration");
 		}
 		System.exit(0);
 	}
 	
-	public static void createMaster(SystemConfiguration c) {
+	public static SSHConnection createMaster(SystemConfiguration c) {
 		// Creating master server.
 		SSHConnection con = new SSHConnection();
-		List<ChannelExec> processes = new ArrayList<ChannelExec>();
 		 try {
 			Args args = new MasterArgs(c.getMasterAdd(), c.getMasterPort(), c.getMasterDir());
 			if (con.openConnection(c.getMasterAdd(), c.getMasterPassword(), c.getMasterUsername(), args, c.getMasterDir())) {
 				System.out.println("Created !");
-                processes.add(con.closeConnection());
 			}
          }catch (Exception e) {
         	mainError = true;
 			System.out.println(e.getMessage());
 			
 		}
+		return con;
 	}
 	
 	public static void createClients(SystemConfiguration c) {
