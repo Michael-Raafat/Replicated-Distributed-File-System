@@ -5,6 +5,7 @@ import data.ReplicaLoc;
 import exceptions.MessageNotFoundException;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
  * Tuesday, 07 May 2019
  */
 public class FilesMetaManager {
-    private FilesMetaManager filesMetaManager;
+    private static FilesMetaManager filesMetaManager;
     private Hashtable<String, FileMeta> filesMeta;
 
     private FilesMetaManager(){
@@ -55,13 +56,13 @@ public class FilesMetaManager {
         return new FileMeta(fileName, replicaLocs, replicaLocs.get(0));
     }
 
-    public FilesMetaManager getInstance() {
+    public static FilesMetaManager getInstance() {
         if (filesMetaManager == null) filesMetaManager = new FilesMetaManager();
         return filesMetaManager;
     }
 
-    public FileMeta getFileMeta(String fileName) throws MessageNotFoundException {
-        if (!filesMeta.containsKey(fileName)) throw new MessageNotFoundException();
+    public FileMeta getFileMeta(String fileName) throws FileNotFoundException {
+        if (!filesMeta.containsKey(fileName)) throw new FileNotFoundException();
         return filesMeta.get(fileName);
     }
 

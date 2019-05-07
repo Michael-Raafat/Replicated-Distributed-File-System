@@ -23,4 +23,12 @@ public class FileMeta {
     public String getFileName() {
         return fileName;
     }
+
+    public List<ReplicaLoc> getReplicasLoc() {
+        return replicasLoc;
+    }
+
+    public ReplicaLoc getMainReplica() {
+        return mainReplica;
+    }
 }
