@@ -12,6 +12,6 @@ public interface ReplicaServerMasterInterface  extends ReplicaInf{
 	
 	public void toPrimary(FileContent data, List<ReplicaLoc> locs) throws RemoteException;
 	
-	public boolean isAlive(ReplicaLoc loc) throws RemoteException;
+	public boolean isAlive() throws RemoteException;
 	
 }
