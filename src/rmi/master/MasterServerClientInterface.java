@@ -10,7 +10,6 @@ import data.ReplicaLoc;
 import data.WriteMsg;
 
 public interface MasterServerClientInterface extends Remote {
-
 	/**
 	 * Read file from server
 	 * 
@@ -22,7 +21,6 @@ public interface MasterServerClientInterface extends Remote {
 	 */
 	public List<ReplicaLoc> read(String fileName) throws FileNotFoundException,
 													 IOException, RemoteException;
-
 	/**
 	 * Start a new write transaction
 	 * 

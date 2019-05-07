@@ -15,7 +15,7 @@ public class SystemConfiguration {
 	private String[] filePaths, serverAdds;
 	/**
 	 * server properties if false
-	 * cleint properties if true
+	 * client properties if true
 	 */
 	private boolean client;
 	private String masterAdd;
@@ -101,6 +101,4 @@ public class SystemConfiguration {
 	public boolean isError() {
 		return error;
 	}
-	
-	
 }
