@@ -26,6 +26,4 @@ public class FileContent implements Serializable {
 	public void setData(String data) {
 		this.data = data;
 	}
-	
-	
 }
