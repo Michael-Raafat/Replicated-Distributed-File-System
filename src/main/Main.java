@@ -8,8 +8,8 @@ import com.jcraft.jsch.ChannelExec;
 import args.Args;
 import args.ClientArgs;
 import args.MasterArgs;
+import configurations.MainConfigurations;
 import utils.SSHConnection;
-import utils.SystemConfiguration;
 
 public class Main {
 	static boolean mainError = false;
@@ -22,7 +22,7 @@ public class Main {
 		} else {
 			System.out.println("Running in socket mode");
 		}
-		SystemConfiguration c = new SystemConfiguration("clients.properties", true);
+		MainConfigurations c = new MainConfigurations("clients.properties");
 		if (!c.isError()) {
 			SSHConnection masterCon =createMaster(c);
 			if (mainError) {
@@ -40,7 +40,7 @@ public class Main {
 		System.exit(0);
 	}
 	
-	public static SSHConnection createMaster(SystemConfiguration c) {
+	public static SSHConnection createMaster(MainConfigurations c) {
 		// Creating master server.
 		SSHConnection con = new SSHConnection();
 		 try {
@@ -57,7 +57,7 @@ public class Main {
 		return con;
 	}
 	
-	public static SSHConnection createClients(SystemConfiguration c) {
+	public static SSHConnection createClients(MainConfigurations c) {
 		SSHConnection con = new SSHConnection();
 		for (int i = 0; i < c.getNumberOfClients(); i++) {
 			try {
