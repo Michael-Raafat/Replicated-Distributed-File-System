@@ -45,6 +45,4 @@ public class ReplicaLoc implements Serializable {
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
 	}
-	
-	
 }

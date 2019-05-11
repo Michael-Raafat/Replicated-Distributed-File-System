@@ -21,16 +21,21 @@ public class Master implements MasterServerClientInterface {
     }
 
     @Override
-    public List<ReplicaLoc> read(String fileName) throws FileNotFoundException, IOException, RemoteException {
+    public List<ReplicaLoc> read(String fileName) throws IOException, RemoteException {
         return this.filesMetaManager.getFileMeta(fileName).getReplicasLoc();
     }
 
     @Override
     public WriteMsg write(String fileName) throws FileNotFoundException, RemoteException, IOException {
-        // TODO handle new file
-        WriteMsg writeMsg = new WriteMsg(seq.incrementAndGet(), System.currentTimeMillis(),
-                this.filesMetaManager.getFileMeta(fileName).getMainReplica());
+        ReplicaLoc replicaLoc;
+        try {
+           replicaLoc = this.filesMetaManager.getFileMeta(fileName).getMainReplica();
+        } catch (FileNotFoundException e) {
+            filesMetaManager.addNewFile(fileName);
+            replicaLoc = this.filesMetaManager.getFileMeta(fileName).getMainReplica();
+        }
 
-        return writeMsg;
+        return new WriteMsg(seq.incrementAndGet(), System.currentTimeMillis(),
+                replicaLoc);
     }
 }
