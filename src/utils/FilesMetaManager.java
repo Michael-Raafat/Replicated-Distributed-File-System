@@ -2,12 +2,8 @@ package utils;
 
 import data.FileMeta;
 import data.ReplicaLoc;
-import exceptions.MessageNotFoundException;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -22,16 +18,23 @@ import java.util.List;
 public class FilesMetaManager {
     private static FilesMetaManager filesMetaManager;
     private Hashtable<String, FileMeta> filesMeta;
-
+    private ReplicasLocManager replicasLocManager;
     private FilesMetaManager(){
         this.filesMeta = new Hashtable<>();
+        this.replicasLocManager = ReplicasLocManager.getInstance();
         readMetasFromDisk();
     }
-
+    private static String META_FILE = "files_meta.txt";
+    /**.
+     * Build metadata of all files from database text file.
+     * Data is on the following format: - no spaces -
+     * file_name \t replica_data1 \t replica_data2
+     * replica_data => id:address:port
+     */
     private void readMetasFromDisk() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("files_meta.txt"));
+            reader = new BufferedReader(new FileReader(META_FILE));
             String line = reader.readLine();
             while(line != null) {
                 String[] tokens = line.split("\t");
@@ -43,6 +46,7 @@ public class FilesMetaManager {
             e.printStackTrace();
         }
     }
+
 
     private FileMeta buildFileMeta(String[] tokens) {
         String fileName = tokens[0];
@@ -66,7 +70,26 @@ public class FilesMetaManager {
         return filesMeta.get(fileName);
     }
 
-    public void addNewFile(String fileName) {
+    public void addNewFile(String fileName) throws IOException {
+        List<ReplicaLoc> replicaLocList = replicasLocManager.getRandomReplicas(3);
+        FileMeta fileMeta = new FileMeta(fileName, replicaLocList, replicaLocList.get(0));
+        this.filesMeta.put(fileName, fileMeta);
+        this.addMetaToDisk(fileMeta);
+    }
 
+    private void addMetaToDisk(FileMeta fileMeta) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(fileMeta.getFileName());
+        for(int i = 0; i < fileMeta.getReplicasLoc().size(); i++) {
+            stringBuilder.append('\t');
+            ReplicaLoc replicaLoc = fileMeta.getReplicasLoc().get(i);
+            stringBuilder.append(replicaLoc.getId()).append(':').append(replicaLoc.getAddress())
+                    .append(':').append(replicaLoc.getPort());
+        }
+
+        FileWriter writer = new FileWriter(META_FILE, true);
+        BufferedWriter buffer = new BufferedWriter(writer);
+        buffer.write(stringBuilder.append('\n').toString());
+        buffer.close();
     }
 }

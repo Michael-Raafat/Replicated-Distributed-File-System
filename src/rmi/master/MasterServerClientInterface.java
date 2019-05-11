@@ -22,12 +22,12 @@ public interface MasterServerClientInterface extends Remote {
 	public List<ReplicaLoc> read(String fileName) throws FileNotFoundException,
 													 IOException, RemoteException;
 	/**
-	 * Start a new write transaction
+	 * Start a new write transaction, if the file is not found, creates it.
 	 * 
 	 * @param fileName
 	 * @return the required info
 	 * @throws RemoteException
 	 * @throws IOException
 	 */
-	public WriteMsg write(String fileName) throws FileNotFoundException, RemoteException, IOException;
+	public WriteMsg write(String fileName) throws RemoteException, IOException;
 }
