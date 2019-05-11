@@ -102,8 +102,7 @@ public class Client {
 	
 	private Remote getReplicaObject (ReplicaLoc replicaAddress) throws RemoteException,
 	NotBoundException {
-		private Remote getReplicaObject (ReplicaLoc replicaAddress) throws RemoteException,
-		NotBoundException {
+		
 		
 		Registry registry = LocateRegistry.getRegistry(replicaAddress.getAddress(), Integer.parseInt(replicaAddress.getPort()));
 //////////////>>>>>>>>>>>>>>>>>>>>>>. check what's the Name !!!
