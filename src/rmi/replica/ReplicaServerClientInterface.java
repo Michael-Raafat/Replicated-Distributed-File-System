@@ -1,14 +1,13 @@
 package rmi.replica;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import data.FileContent;
 import data.WriteMsg;
 import exceptions.MessageNotFoundException;
 
-public interface ReplicaServerClientInterface extends ReplicaInf {
+public interface ReplicaServerClientInterface extends ReplicaInterface {
 	/**
 	 * 
 	 * @param txnID: the ID of the transaction to which this message relates

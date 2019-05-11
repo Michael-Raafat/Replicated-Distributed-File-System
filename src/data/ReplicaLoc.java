@@ -7,6 +7,7 @@ public class ReplicaLoc implements Serializable {
 	private String address;
 	private String port;
 	private boolean isAlive;
+
 	public ReplicaLoc(long id, String address, String port, boolean isAlive) {
 		this.id = id;
 		this.address = address;

@@ -6,12 +6,8 @@ import java.util.List;
 import data.FileContent;
 import data.ReplicaLoc;
 
-public interface ReplicaServerMasterInterface  extends ReplicaInf{
-	
-	public void createFile(FileContent data) throws RemoteException;
-	
-	public void toPrimary(FileContent data, List<ReplicaLoc> locs) throws RemoteException;
-	
-	public boolean isAlive() throws RemoteException;
-	
+public interface ReplicaServerMasterInterface extends ReplicaInterface {
+	void createFile(FileContent data) throws RemoteException;
+	void setAsPrimary(String fileName, List<ReplicaLoc> locations) throws RemoteException;
+	boolean isAlive() throws RemoteException;
 }
