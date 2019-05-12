@@ -22,7 +22,7 @@ public class Main {
 		} else {
 			System.out.println("Running in socket mode");
 		}
-		MainConfigurations c = new MainConfigurations("clients.properties");
+		MainConfigurations c = new MainConfigurations("main.properties");
 		if (!c.isError()) {
 			SSHConnection masterCon =createMaster(c);
 			if (mainError) {

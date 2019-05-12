@@ -23,7 +23,6 @@ public interface ReplicaServerClientInterface extends ReplicaInterface {
 	
 	public FileContent read(String fileName) throws FileNotFoundException,
 													IOException, RemoteException;
-	
 	/**
 	 * @param txnID: the ID of the transaction to which this message relates
 	 * @param numOfMsgs: Number of messages sent to the server
@@ -33,7 +32,6 @@ public interface ReplicaServerClientInterface extends ReplicaInterface {
 	 */
 	public boolean commit(long txnID, long numOfMsgs) throws MessageNotFoundException,
 															 RemoteException;
-	
 	/**
 	 * @param txnID: the ID of the transaction to which this message relates
 	 * @return true for acknowledgment
