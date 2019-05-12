@@ -31,4 +31,13 @@ public class FileMeta {
     public ReplicaLoc getMainReplica() {
         return mainReplica;
     }
+
+    @Override
+    public String toString() {
+        return "FileMeta{" +
+                "fileName='" + fileName + '\'' +
+                ", replicasLoc=" + replicasLoc.toString() +
+                ", mainReplica=" + mainReplica.toString() +
+                '}';
+    }
 }

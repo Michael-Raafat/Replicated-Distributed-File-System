@@ -13,13 +13,13 @@ import java.util.*;
  * @author Marc Magdi
  * Saturday, 11 May 2019
  */
-public class ReplicasLocManager {
-    private List<ReplicaLoc> replicasLocs;
+class ReplicasLocManager {
+    List<ReplicaLoc> replicasLocs;
     private Random rand = new Random();
 
     private static ReplicasLocManager ourInstance = new ReplicasLocManager();
 
-    public static ReplicasLocManager getInstance() {
+    static ReplicasLocManager getInstance() {
         return ourInstance;
     }
 
@@ -34,7 +34,7 @@ public class ReplicasLocManager {
             reader = new BufferedReader(new FileReader("babies.info"));
             String line = reader.readLine();
             while(line != null) {
-                String[] tokens = line.split("\t");
+                String[] tokens = line.split("\\s+");
                 this.replicasLocs.add( buildReplicaLoc(tokens));
                 line = reader.readLine();
             }
@@ -55,5 +55,4 @@ public class ReplicasLocManager {
 
         return new ArrayList<>(replicaLocSet);
     }
-
 }

@@ -46,4 +46,14 @@ public class ReplicaLoc implements Serializable {
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
 	}
+
+	@Override
+	public String toString() {
+		return "ReplicaLoc{" +
+				"id=" + id +
+				", address='" + address + '\'' +
+				", port='" + port + '\'' +
+				", isAlive=" + isAlive +
+				'}';
+	}
 }
