@@ -10,9 +10,19 @@ import data.RequestType;
 **/
 public class AbortRequest implements Request {
 
+	private String fileName;
+	
+	public AbortRequest(String fileName) {
+		this.fileName = fileName;
+	}
+
 	@Override
 	public RequestType getType() {
 		return RequestType.ABORT;
+	}
+
+	public String getFileName() {
+		return fileName;
 	}
 
 }

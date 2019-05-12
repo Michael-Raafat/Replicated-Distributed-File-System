@@ -22,4 +22,8 @@ public class Transaction {
 	public void addRequest(Request request) {
 		this.requests.add(request); 
 	}
+	public List<Request> getRequests() {
+		return requests;
+	}
+
 }

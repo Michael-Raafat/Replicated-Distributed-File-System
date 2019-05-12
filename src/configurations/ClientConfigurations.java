@@ -78,16 +78,22 @@ public class ClientConfigurations {
 			    			indexU = request.length();
 			    		}
 			    		String requestType = request.substring(0, indexU);
+			    		int indexA = request.indexOf(" ");
+		    			if (indexA == -1) {
+		    				indexA = request.length();
+		    			}
+		    			String fileName = request.substring(indexU + 1, indexA);
+		    			
 			    		if (RequestType.toRequestType(requestType) == RequestType.COMMIT) {
-			    			transaction.addRequest(new CommitRequest());
+			    			transaction.addRequest(new CommitRequest(fileName));
 			    		} else if (RequestType.toRequestType(requestType) == RequestType.ABORT){ 
-			    			transaction.addRequest(new AbortRequest());
+			    			transaction.addRequest(new AbortRequest(fileName));
 			    		} else {
-			    			int indexA = request.indexOf(" ");
-			    			if (indexA == -1) {
-			    				indexA = request.length();
-			    			}
-			    			String fileName = request.substring(indexU + 1, indexA);
+//			    			int indexA = request.indexOf(" ");
+//			    			if (indexA == -1) {
+//			    				indexA = request.length();
+//			    			}
+//			    			String fileName = request.substring(indexU + 1, indexA);
 			    			if (RequestType.toRequestType(requestType) == RequestType.WRITE) {
 			    				int indexB = request.indexOf(" ");
 				    			if (indexB == -1) {

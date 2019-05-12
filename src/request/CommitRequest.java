@@ -9,10 +9,20 @@ import data.RequestType;
 * May 12, 2019
 **/
 public class CommitRequest implements Request {
+	
+	private String fileName;
+	
+	public CommitRequest(String fileName) {
+		this.fileName = fileName;
+	}
 
 	@Override
 	public RequestType getType() {
 		return RequestType.COMMIT;
+	}
+
+	public String getFileName() {
+		return fileName;
 	}
 
 }
