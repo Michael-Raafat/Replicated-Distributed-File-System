@@ -78,13 +78,13 @@ public class ClientConfigurations {
 			    			indexU = request.length();
 			    		}
 			    		String requestType = request.substring(0, indexU);
-			    		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+			    		//////////////////////////////////////////////////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 			    		int indexA = request.indexOf(" ");
 		    			if (indexA == -1) {
 		    				indexA = request.length();
 		    			}
 		    			String fileName = request.substring(indexU + 1, indexA);
-		    			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		    			////////////////////////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 			    		if (RequestType.toRequestType(requestType) == RequestType.COMMIT) {
 			    			transaction.addRequest(new CommitRequest(fileName));
 			    		} else if (RequestType.toRequestType(requestType) == RequestType.ABORT){ 
@@ -122,7 +122,7 @@ public class ClientConfigurations {
 				    	return;
 					}
 				}
-			transactions.add(transaction);
+				
 			}
 		} catch (Exception e) { 
 			error = true;
