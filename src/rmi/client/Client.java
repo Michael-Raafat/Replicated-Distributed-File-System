@@ -70,14 +70,19 @@ public class Client {
 		
 		List<Transaction> trans = cc.getTransactions();
 		for (int i = 0; i < trans.size(); i++) {
+			
 			Transaction t = trans.get(i);
 			List<Request> requests = t.getRequests();
+			System.out.println("Transaction Number : " + (i+1));
 			for (int j= 0; j < requests.size(); j++) {
+				System.out.println("Request Number : " + (j+1));
 				switch (requests.get(j).getType()) {
 				case READ :
 					ReadRequest r = (ReadRequest) requests.get(j);
 					System.out.println("Request Type : Read ... Reading file" + r.getFileName());
 					FileContent file = read(r.getFileName());
+					System.out.println("File Content");
+					System.out.println(file.toString());
 					break;
 				case WRITE :
 					WriteRequest w = (WriteRequest) requests.get(j);
@@ -98,7 +103,7 @@ public class Client {
 					break;
 				case COMMIT :
 					CommitRequest c = (CommitRequest) requests.get(j);
-					
+					System.out.println("Request Type : Commit ... Commiting file" + c.getFileName());
 					commit(c.getFileName(), transComOrAb.get(c.getFileName()), 
 							modifiedFiles.get(c.getFileName()).size());
 					modifiedFiles.remove(c.getFileName());
@@ -106,7 +111,7 @@ public class Client {
 					break;
 				case ABORT :
 					AbortRequest a = (AbortRequest) requests.get(j);
-					
+					System.out.println("Request Type : Abort ... Aborting file" + a.getFileName());
 					abort(transComOrAb.get(a.getFileName()));
 					modifiedFiles.remove(a.getFileName());
 					transComOrAb.remove(a.getFileName());
@@ -127,7 +132,6 @@ public class Client {
 		
 		ReplicaServerClientInterface primaryReplica = 
 				(ReplicaServerClientInterface) getReplicaObject(primaryReplicaAddress);
-		//>>>>>>>>>>>> transaction id removed from replica
 		FileContent file = primaryReplica.read(fileName);
 		return file;
 	}
