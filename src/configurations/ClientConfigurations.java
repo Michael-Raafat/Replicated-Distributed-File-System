@@ -115,7 +115,7 @@ public class ClientConfigurations {
 				    	return;
 					}
 				}
-				
+			transactions.add(transaction);
 			}
 		} catch (Exception e) { 
 			error = true;
