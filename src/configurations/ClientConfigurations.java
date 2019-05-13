@@ -16,7 +16,7 @@ import request.ReadRequest;
 import request.WriteRequest;
 /**
 * CS 432: Distributed Systems.
-* Assignment 3: Relpicated File System
+* Assignment 3: Replicated File System
 * @author Michael
 * May 9, 2019
 **/

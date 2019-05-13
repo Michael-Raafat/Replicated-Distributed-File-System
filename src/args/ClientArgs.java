@@ -10,8 +10,6 @@ public class ClientArgs implements Args {
 		this.filePath = filePath;
 	}
 	
-	
-	
 	public boolean isClient() {
 		return client;
 	}
