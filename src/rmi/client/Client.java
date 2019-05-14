@@ -132,7 +132,8 @@ public class Client {
 		
 		ReplicaServerClientInterface primaryReplica = 
 				(ReplicaServerClientInterface) getReplicaObject(primaryReplicaAddress);
-		FileContent file = primaryReplica.read(fileName);
+		// TODO: change transaction id to be dynamic from master server.
+		FileContent file = primaryReplica.read(1, fileName);
 		return file;
 	}
 	
@@ -154,7 +155,7 @@ public class Client {
 
 		for (int i = 0; i < data.size(); i++) {
 			System.out
-					.println("Send Write Requst to PrimaryReplica : transactionID : "
+					.println("Send Write Request to PrimaryReplica : transactionID : "
 							+ masterResponse.getTransactionId()
 							+ ", msgSequenceNum : "
 							+ i);
