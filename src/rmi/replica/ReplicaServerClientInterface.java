@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 import data.FileContent;
-import data.WriteMsg;
+import data.TransactionMsg;
 import exceptions.MessageNotFoundException;
 
 public interface ReplicaServerClientInterface extends ReplicaInterface {
@@ -25,12 +25,11 @@ public interface ReplicaServerClientInterface extends ReplicaInterface {
 													IOException, RemoteException;
 	/**
 	 * @param transactionId: the ID of the transaction to which this message relates
-	 * @param numOfMsgs: Number of messages sent to the server
 	 * @return true for acknowledgment
 	 * @throws MessageNotFoundException
 	 * @throws RemoteException
 	 */
-	public boolean commit(long transactionId, long numOfMsgs) throws MessageNotFoundException,
+	public boolean commit(long transactionId) throws MessageNotFoundException,
 			IOException;
 	/**
 	 * @param transactionId: the ID of the transaction to which this message relates

@@ -1,5 +1,8 @@
 package data;
-public class WriteMsg {
+
+import java.util.List;
+
+public class TransactionMsg {
 
 	private long transactionId;
 	private long timeStamp;
@@ -7,11 +10,24 @@ public class WriteMsg {
 	 * location of the primary replica of that file.
 	 */
 	private ReplicaLoc loc;
+	/**
+	 * List of replicas locations.
+	 */
+	List<ReplicaLoc> replicas;
 	
-	public WriteMsg(long transactionId, long timeStamp, ReplicaLoc loc) {
+	public TransactionMsg(long transactionId, long timeStamp, ReplicaLoc loc, List<ReplicaLoc> replicas) {
 		this.transactionId = transactionId;
 		this.timeStamp = timeStamp;
 		this.loc = loc;
+		this.replicas = replicas;
+	}
+
+	public List<ReplicaLoc> getReplicas() {
+		return replicas;
+	}
+
+	public void setReplicas(List<ReplicaLoc> replicas) {
+		this.replicas = replicas;
 	}
 
 	public long getTransactionId() {

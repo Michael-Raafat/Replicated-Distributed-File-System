@@ -4,14 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
-
-import data.ReplicaLoc;
-import data.WriteMsg;
+import data.TransactionMsg;
 
 public interface MasterServerClientInterface extends Remote {
 	/**
-	 * Read file from server
+	 * Request transactions.
 	 * 
 	 * @param fileName
 	 * @return the addresses of its different replicas
@@ -19,15 +16,6 @@ public interface MasterServerClientInterface extends Remote {
 	 * @throws IOException
 	 * @throws RemoteException
 	 */
-	public List<ReplicaLoc> read(String fileName) throws FileNotFoundException,
+	public TransactionMsg request_transaction(String fileName) throws FileNotFoundException,
 													 IOException, RemoteException;
-	/**
-	 * Start a new write transaction, if the file is not found, creates it.
-	 * 
-	 * @param fileName
-	 * @return the required info
-	 * @throws RemoteException
-	 * @throws IOException
-	 */
-	public WriteMsg write(String fileName) throws RemoteException, IOException;
 }

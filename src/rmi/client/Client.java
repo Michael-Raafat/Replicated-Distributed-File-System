@@ -6,12 +6,10 @@ import java.util.List;
 
 import configurations.ClientConfigurations;
 
-import java.util.List;
-
 import data.FileContent;
 import data.ReplicaLoc;
 import data.Transaction;
-import data.WriteMsg;
+import data.TransactionMsg;
 import exceptions.MessageNotFoundException;
 import request.AbortRequest;
 import request.CommitRequest;
@@ -29,19 +27,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import data.ReplicaLoc;
 import data.RequestType;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-
-
 import rmi.master.MasterServerClientInterface;
 import rmi.replica.ReplicaServerClientInterface;
 import utils.Entry;
@@ -146,7 +132,7 @@ public class Client {
 
 		System.out.println("Send Write Request to Master Server");
 		
-		WriteMsg masterResponse = masterServer.write(fileName);
+		TransactionMsg masterResponse = masterServer.write(fileName);
 
 		System.out.println("Get the Primary Replica : ( "
 				+ masterResponse.getLoc().toString() + " )");
