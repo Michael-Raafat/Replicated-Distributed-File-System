@@ -55,4 +55,8 @@ class ReplicasLocManager {
 
         return new ArrayList<>(replicaLocSet);
     }
+
+    public List<ReplicaLoc> getReplicasLocs() {
+        return replicasLocs;
+    }
 }
