@@ -13,13 +13,13 @@ import java.util.*;
  * @author Marc Magdi
  * Saturday, 11 May 2019
  */
-class ReplicasLocManager {
+public class ReplicasLocManager {
     List<ReplicaLoc> replicasLocs;
     private Random rand = new Random();
 
     private static ReplicasLocManager ourInstance = new ReplicasLocManager();
 
-    static ReplicasLocManager getInstance() {
+    public static ReplicasLocManager getInstance() {
         return ourInstance;
     }
 
