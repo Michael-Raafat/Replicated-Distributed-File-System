@@ -18,10 +18,10 @@ public interface ReplicaServerClientInterface extends ReplicaInterface {
 	 * @throws IOException
 	 * @throws RemoteException
 	 */
-	public Boolean write(long transactionId, long msgSeqNum, FileContent data)
+	public Boolean write(TransactionMsg transaction_msg, long msgSeqNum, FileContent data)
 											 throws RemoteException, IOException;
 	
-	public FileContent read(long transactionId, String fileName) throws FileNotFoundException,
+	public FileContent read(TransactionMsg transaction_msg, long msgSeqNum, String fileName) throws FileNotFoundException,
 													IOException, RemoteException;
 	/**
 	 * @param transactionId: the ID of the transaction to which this message relates
@@ -29,12 +29,12 @@ public interface ReplicaServerClientInterface extends ReplicaInterface {
 	 * @throws MessageNotFoundException
 	 * @throws RemoteException
 	 */
-	public boolean commit(long transactionId) throws MessageNotFoundException,
+	public boolean commit(TransactionMsg transaction_msg) throws MessageNotFoundException,
 			IOException;
 	/**
 	 * @param transactionId: the ID of the transaction to which this message relates
 	 * @return true for acknowledgment
 	 * @throws RemoteException
 	 */
-	public boolean abort(long transactionId) throws RemoteException;
+	public boolean abort(TransactionMsg transaction_msg) throws RemoteException;
 }
