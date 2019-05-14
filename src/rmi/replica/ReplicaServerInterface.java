@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface ReplicaServerInterface extends ReplicaInterface {
 	void acquireLock(String fileName) throws RemoteException;
-	boolean updateReplicas(long transactionId, String fileName, Map<Long, String> writes) throws RemoteException, IOException;
+	boolean updateReplicas(String fileName, Map<Long, String> writes) throws RemoteException, IOException;
 	void releaseLock(String fileName) throws RemoteException;
 }

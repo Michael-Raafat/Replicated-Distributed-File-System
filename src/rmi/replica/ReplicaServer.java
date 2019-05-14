@@ -63,13 +63,17 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     }
 
     @Override
-    public boolean updateReplicas(long transactionId, String fileName, Map<Long, String> writes) throws RemoteException, IOException {
+    public boolean updateReplicas(String fileName, Map<Long, String> writes) throws RemoteException, IOException {
         File file = new File(path + "/" + fileName);
         if (!file.exists()) {
             file.createNewFile();
         }
-
-        return false;
+        FileWriter fileWriter = new FileWriter(file);
+        for (Map.Entry<Long, String> entry : writes.entrySet()) {
+            fileWriter.append(entry.getValue());
+        }
+        fileWriter.close();
+        return true;
     }
 
     @Override
@@ -184,7 +188,7 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         List<ReplicaServer> replicas = sameFileReplicas.get(fileName);
         for (ReplicaServer replica : replicas) {
             replica.acquireLock(fileName);
-            replica.updateReplicas(transactionId, fileName, transactionWrites.get(transactionId));
+            replica.updateReplicas(fileName, transactionWrites.get(transactionId));
             replica.releaseLock(fileName);
         }
         transactionWrites.remove(transactionId);
