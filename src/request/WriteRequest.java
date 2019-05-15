@@ -14,6 +14,7 @@ public class WriteRequest implements Request {
 
 	private String fileName;
 	private List<String> data;
+	private int transactionNum;
 	
 	public WriteRequest(String fileName, List<String> data) {
 		this.fileName = fileName;
@@ -33,5 +34,7 @@ public class WriteRequest implements Request {
 		return data;
 	}
 	
-	
+	public int getTransactionNum() {
+		return transactionNum;
+	}
 }

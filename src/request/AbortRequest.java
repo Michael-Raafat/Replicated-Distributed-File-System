@@ -11,6 +11,7 @@ import data.RequestType;
 public class AbortRequest implements Request {
 
 	private String fileName;
+	private int transactionNum;
 	
 	public AbortRequest(String fileName) {
 		this.fileName = fileName;
@@ -24,5 +25,10 @@ public class AbortRequest implements Request {
 	public String getFileName() {
 		return fileName;
 	}
+
+	public int getTransactionNum() {
+		return transactionNum;
+	}
+	
 
 }
