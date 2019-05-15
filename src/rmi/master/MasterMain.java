@@ -25,8 +25,8 @@ import utils.SSHConnection;
  * Tuesday, 07 May 2019
  */
 public class MasterMain {
-	private static String USER_NAME = "USERNAME";
-	private static String PASSWORD = "PASS";
+	private static String USER_NAME = "admin";
+	private static String PASSWORD = "admin";
 	private static int port;
 	private static int rmiPort = 1099;
     private static String serverAddress;
@@ -37,13 +37,13 @@ public class MasterMain {
     private static Boolean masterError = false;
     public static void main(String[] args) throws InterruptedException {
     	for (int i = 0; i < args.length; i+= 2) {
-			if (args[i] == "-ip") {
+			if (args[i].equals("-ip")) {
 	    		serverAddress = args[i + 1];
 	    	}
-	    	if (args[i] == "-port") {
+	    	if (args[i].equals("-port")) {
 	    		port = Integer.parseInt(args[i + 1]);
 	    	}
-	    	if (args[i] == "-dir") {
+	    	if (args[i].equals("-dir")) {
 	    		dir = args[i + 1];
 	    	}
 		}
