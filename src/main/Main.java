@@ -14,14 +14,6 @@ import utils.SSHConnection;
 public class Main {
 	static boolean mainError = false;
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		boolean rmi = false;
-		if (args.length > 0 && args[0].equals("rmi")) {
-			System.out.println("Running in RMI mode");
-			rmi = true;
-		} else {
-			System.out.println("Running in socket mode");
-		}
 		MainConfigurations c = new MainConfigurations("main.properties");
 		if (!c.isError()) {
 			SSHConnection masterCon =createMaster(c);

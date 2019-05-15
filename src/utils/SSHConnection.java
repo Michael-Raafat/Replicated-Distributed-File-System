@@ -12,12 +12,14 @@ import com.jcraft.jsch.Session;
 
 import args.Args;
 import args.ClientArgs;
+import args.MasterArgs;
 
 public class SSHConnection {
 	private ChannelExec p;
 	private BufferedReader in;
 	private static final String RMI_CLIENT = "client.jar";
 	private static final String RMI_MASTER = "master.jar";
+	private static final String RMI_REPLICA = "replica.jar";
 	private Session session;
 	private Channel channel;
 	
@@ -40,8 +42,10 @@ public class SSHConnection {
 			String jar;
 			if (args instanceof ClientArgs) {
 				jar = RMI_CLIENT;
-			} else {
+			} else if (args instanceof MasterArgs){
 				jar = RMI_MASTER;
+			} else {
+				jar = RMI_REPLICA;
 			}
 			channel=session.openChannel("exec");
 	        ((ChannelExec)channel).setCommand(" cd " + path + " ; java -jar " +
@@ -53,7 +57,6 @@ public class SSHConnection {
 	        channel.connect();
 	        
 			
-			System.out.println("data from process : " + recvData());
 			success = true;
 		} catch (IOException e) {
 			e.printStackTrace();

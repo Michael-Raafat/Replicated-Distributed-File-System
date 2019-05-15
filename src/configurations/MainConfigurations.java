@@ -54,6 +54,20 @@ public class MainConfigurations {
 		    	System.out.println("Error! missing address of main server!");
 		    	return;
 			}
+			if (properties.containsKey("master.username")) {
+				masterUsername = properties.get("master.username");
+			} else {
+				error = true;
+		    	System.out.println("Error! missing username of main server!");
+		    	return;
+			}
+			if (properties.containsKey("master.pass")) {
+				masterPassword = properties.get("master.pass");
+			} else {
+				error = true;
+		    	System.out.println("Error! missing password of main server!");
+		    	return;
+			}
 			if (properties.containsKey("number.of.clients")) {
 				numberOfClients = Integer.parseInt(
 						properties.get("number.of.clients").trim());
@@ -65,6 +79,7 @@ public class MainConfigurations {
 			filePaths = new String[numberOfClients];
 			clientUserNames = new String[numberOfClients];
 			clientPasswords = new String[numberOfClients];
+			clientAdds = new String[numberOfClients];
 			for (int i = 0; i < numberOfClients; i++) {
 				if (properties.containsKey("client" + i + ".file")) {
 					filePaths[i] = properties.get("client" + i ).trim();

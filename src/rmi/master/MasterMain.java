@@ -26,7 +26,7 @@ import utils.SSHConnection;
  */
 public class MasterMain {
 	private static String USER_NAME = "USERNAME";
-	private static String PASSWORD = "PASSWORD";
+	private static String PASSWORD = "PASS";
 	private static int port;
 	private static int rmiPort = 1099;
     private static String serverAddress;
@@ -47,8 +47,9 @@ public class MasterMain {
 	    		dir = args[i + 1];
 	    	}
 		}
-    	System.setProperty("java.rmi.server.hostname",serverAddress);
+    	//System.setProperty("java.rmi.server.hostname",serverAddress);
     	try {
+    		controller = new Master();
     		LocateRegistry.createRegistry(rmiPort);
     		rController = (MasterServerClientInterface) UnicastRemoteObject.exportObject(controller, port);
     		reg = LocateRegistry.getRegistry(rmiPort);
@@ -94,7 +95,7 @@ public class MasterMain {
     		try {
 				Args args = new ReplicaArgs(replicas.get(i));
 				if (con.openConnection(replicas.get(i).getAddress(), PASSWORD, USER_NAME, args, dir)) {
-					System.out.println("Clients Created !");
+					System.out.println("Replica" + i + " Created !");
 				}
 			} catch (Exception e) {
         		masterError = true;
