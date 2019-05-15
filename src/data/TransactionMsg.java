@@ -1,9 +1,14 @@
 package data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class TransactionMsg {
+public class TransactionMsg implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6869049330709374028L;
 	private long transactionId;
 	private long timeStamp;
 	/**
