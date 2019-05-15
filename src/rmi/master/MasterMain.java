@@ -99,7 +99,7 @@ public class MasterMain {
     		try {
 				Args args = new ReplicaArgs(replicas.get(i));
 				if (con.openConnection(replicas.get(i).getAddress(), PASSWORD, USER_NAME, args, dir)) {
-					System.out.println("Replica" + i + " Created !");
+					System.out.println("Replica" + (i + 1) + " Created !");
 				}
 			} catch (Exception e) {
         		masterError = true;
