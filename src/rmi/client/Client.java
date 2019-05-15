@@ -206,10 +206,8 @@ public class Client {
 	
 	private MasterServerClientInterface getMasterObject (String ipAddr, String port) throws RemoteException,
 	NotBoundException {
-		
-		
 		Registry registry = LocateRegistry.getRegistry(ipAddr, rmiPort);
-		return (MasterServerClientInterface) registry.lookup("RemoteAccessController");
+		return (MasterServerClientInterface) registry.lookup("Master");
 	}
 
 
