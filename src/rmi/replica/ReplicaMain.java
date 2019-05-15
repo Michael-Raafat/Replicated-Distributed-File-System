@@ -27,7 +27,7 @@ public class ReplicaMain {
 		}
 		ReplicaServerGeneralInterface controller = new ReplicaServer(dir);
 		try {
-    		System.setProperty("java.rmi.server.hostname", serverAddress);
+			System.setProperty("java.rmi.server.hostname", serverAddress);
     		LocateRegistry.createRegistry(port);
 			rController = (ReplicaServerGeneralInterface) UnicastRemoteObject.exportObject(controller, port);
 			reg = LocateRegistry.getRegistry(port);

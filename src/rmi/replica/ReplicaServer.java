@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ReplicaServer implements ReplicaServerGeneralInterface {
     private String path;
-    private Map<String, List<ReplicaServer>> sameFileReplicas;
+    private Map<String, List<ReplicaServerGeneralInterface>> sameFileReplicas;
     private Map<String, ReentrantReadWriteLock> locks;
     private Map<Long, String> transactionFiles;
     private Map<String, Set<Long>> runningTransactions;
@@ -103,7 +103,7 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     }
     
     private void setAsPrimary(String fileName, List<ReplicaLoc> locations) throws RemoteException {
-        List<ReplicaServer> replicaServers = new ArrayList<>();
+        List<ReplicaServerGeneralInterface> replicaServers = new ArrayList<>();
         for (ReplicaLoc replicaLoc : locations) {
             replicaServers.add(rmiUtils.getReplicaServer(replicaLoc));
         }
@@ -213,8 +213,8 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
         if (transactionFiles.containsKey(transactionId)) {
             Map<Long, String> writes = transactionWrites.get(transactionId);
             String fileName = transactionFiles.get(transactionId);
-            List<ReplicaServer> replicas = sameFileReplicas.get(fileName);
-            for (ReplicaServer replica : replicas) {
+            List<ReplicaServerGeneralInterface> replicas = sameFileReplicas.get(fileName);
+            for (ReplicaServerGeneralInterface replica : replicas) {
                 List<String> writeMessages = getListFromMapValues(writes);
                 replica.updateReplicas(fileName, writeMessages);
             }
