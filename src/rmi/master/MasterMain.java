@@ -3,11 +3,13 @@ package rmi.master;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 
 import args.Args;
 import args.ReplicaArgs;
 import data.ReplicaLoc;
+import rmi.replica.ReplicaServerMasterInterface;
 import utils.ReplicasLocManager;
 import utils.SSHConnection;
 
@@ -31,7 +33,7 @@ public class MasterMain {
     private static Master controller;
     private static MasterServerClientInterface rController;
     private static Boolean masterError = false;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
     	for (int i = 0; i < args.length; i+= 2) {
 			if (args[i] == "-ip") {
 	    		serverAddress = args[i + 1];
@@ -59,8 +61,19 @@ public class MasterMain {
 			System.out.println("Failed to create all replicas, terminating master !");
 			System.exit(-1);
 		}
-    	
+
+		Thread.sleep(1000);
+    	startHeartBeats();
     }
+
+    private static void startHeartBeats() {
+		ReplicasLocManager repLManager = ReplicasLocManager.getInstance();
+		List<ReplicaLoc> replicas = repLManager.getReplicasLocs();
+		List<ReplicaServerMasterInterface> replicasInterface = new ArrayList<>();
+		for (ReplicaLoc replica : replicas) {
+			// TODO get replica and add it to list
+		}
+	}
     
     private static SSHConnection startReplicas() {
     	SSHConnection con = new SSHConnection();
