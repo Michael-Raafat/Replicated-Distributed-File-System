@@ -3,12 +3,17 @@ import java.io.Serializable;
 
 public class ReplicaLoc implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3946648948561068054L;
+	
 	private long id;
 	private String address;
-	private String port;
+	private int port;
 	private boolean isAlive;
 
-	public ReplicaLoc(long id, String address, String port, boolean isAlive) {
+	public ReplicaLoc(long id, String address, int port, boolean isAlive) {
 		this.id = id;
 		this.address = address;
 		this.port = port;
@@ -31,11 +36,11 @@ public class ReplicaLoc implements Serializable {
 		this.address = address;
 	}
 
-	public String getPort() {
+	public int getPort() {
 		return port;
 	}
 
-	public void setPort(String port) {
+	public void setPort(int port) {
 		this.port = port;
 	}
 

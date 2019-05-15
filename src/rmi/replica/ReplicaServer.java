@@ -16,17 +16,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInterface,
-                                      ReplicaServerInterface, ReplicaServerMasterInterface {
-    // TODO: To be changed to configuration or arguments.
-    public static final String REGISTRY_ADDRESS = "Test";
-    public static final int REGISTRY_PORT = 2020;
-
-    private static final String REPLICA_PATH_PREFIX = "Replica";
-
+public class ReplicaServer implements ReplicaServerGeneralInterface {
     private String path;
-    private ReplicaLoc loc;
-    private Registry registry;
     private Map<String, List<ReplicaServer>> sameFileReplicas;
     private Map<String, ReentrantReadWriteLock> locks;
     private Map<Long, String> transactionFiles;
@@ -34,10 +25,8 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     private Map<Long, Map<Long, String>> transactionWrites;
     private Lock metaLock;
 
-    public ReplicaServer(ReplicaLoc loc) {
-        this.loc = loc;
-        this.path = REPLICA_PATH_PREFIX + loc.getId();
-        this.registry = getRegistry();
+    public ReplicaServer(String path) {
+        this.path = path;
         this.sameFileReplicas = new ConcurrentHashMap<>();
         this.locks = new ConcurrentHashMap<>();
         this.transactionFiles = new HashMap<>();
@@ -54,10 +43,10 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         }
     }
 
-    private Registry getRegistry() {
+    private Registry getRegistry(ReplicaLoc loc) {
         Registry registry = null;
         try {
-            registry = LocateRegistry.getRegistry(REGISTRY_ADDRESS, REGISTRY_PORT);
+            registry = LocateRegistry.getRegistry(loc.getAddress(), loc.getPort());
         } catch (RemoteException e) {
             System.out.println("Unable to get Registry");
         }
@@ -130,8 +119,7 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     private ReplicaServer getReplicaServer(ReplicaLoc replicaLoc) throws RemoteException {
         ReplicaServer replicaServer = null;
         try {
-            // TODO: Modify Name to make it consistent.
-            replicaServer = (ReplicaServer) registry.lookup("Replica" + replicaLoc.getId());
+            replicaServer = (ReplicaServer) getRegistry(replicaLoc).lookup("Replica" + replicaLoc.getId());
         } catch (NotBoundException e) {
             System.out.println("NotBoundException for Registry Variable");
         }

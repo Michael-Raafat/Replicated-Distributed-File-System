@@ -1,13 +1,11 @@
 package rmi.master;
 
-import java.awt.image.ReplicateScaleFilter;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 import args.Args;
-import args.ClientArgs;
 import args.ReplicaArgs;
 import data.ReplicaLoc;
 import utils.ReplicasLocManager;
@@ -34,15 +32,17 @@ public class MasterMain {
     private static MasterServerClientInterface rController;
     private static Boolean masterError = false;
     public static void main(String[] args) {
-    	if (args[0] == "-ip") {
-    		serverAddress = args[1];
-    	}
-    	if (args[2] == "-port") {
-    		port = Integer.parseInt(args[3]);
-    	}
-    	if (args[4] == "-dir") {
-    		dir = args[5];
-    	}
+    	for (int i = 0; i < args.length; i+= 2) {
+			if (args[i] == "-ip") {
+	    		serverAddress = args[i + 1];
+	    	}
+	    	if (args[i] == "-port") {
+	    		port = Integer.parseInt(args[i + 1]);
+	    	}
+	    	if (args[i] == "-dir") {
+	    		dir = args[i + 1];
+	    	}
+		}
     	System.setProperty("java.rmi.server.hostname",serverAddress);
     	try {
     		LocateRegistry.createRegistry(rmiPort);
@@ -68,7 +68,7 @@ public class MasterMain {
     	List<ReplicaLoc> replicas = repLManager.getReplicasLocs();
     	for (int i = 0; i < replicas.size(); i++) {
     		try {
-				Args args = new ReplicaArgs();
+				Args args = new ReplicaArgs(replicas.get(i));
 				if (con.openConnection(replicas.get(i).getAddress(), PASSWORD, USER_NAME, args, dir)) {
 					System.out.println("Clients Created !");
 				}
