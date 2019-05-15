@@ -3,6 +3,7 @@ package rmi.master;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,11 @@ public class MasterMain {
     	System.setProperty("java.rmi.server.hostname",serverAddress);
     	try {
     		controller = new Master(dir);
-    		LocateRegistry.createRegistry(RMIUtils.RMI_PORT);
+    		try {
+    			LocateRegistry.createRegistry(RMIUtils.RMI_PORT);
+    		} catch (ExportException ex) {
+    			// Ignore export exception
+    		}
     		rController = (MasterServerClientInterface) UnicastRemoteObject.exportObject(controller, port);
     		reg = LocateRegistry.getRegistry(RMIUtils.RMI_PORT);
     		reg.rebind("Master", rController);
