@@ -20,12 +20,15 @@ public class Master implements MasterServerClientInterface {
 
     @Override
     public TransactionMsg request_transaction(String fileName) throws IOException, RemoteException {
-        FileMeta fileMeta;
+        FileMeta fileMeta = null;
         try {
+            System.out.println("test");
             fileMeta = this.filesMetaManager.getFileMeta(fileName);
         } catch (FileNotFoundException e) {
             filesMetaManager.addNewFile(fileName);
             fileMeta = this.filesMetaManager.getFileMeta(fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return new TransactionMsg(seq.incrementAndGet(), System.currentTimeMillis(),

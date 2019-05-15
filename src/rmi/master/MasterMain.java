@@ -26,8 +26,8 @@ import utils.SSHConnection;
  * Tuesday, 07 May 2019
  */
 public class MasterMain {
-	private static String USER_NAME = "amrnasr";
-	private static String PASSWORD = "a1s2d3f4";
+	private static String USER_NAME = "marc";
+	private static String PASSWORD = "274129";
 	private static int port;
     private static String serverAddress;
     private static String dir;

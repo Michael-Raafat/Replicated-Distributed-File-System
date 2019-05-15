@@ -16,7 +16,7 @@ public class Main {
 	public static void main(String[] args) {
 		MainConfigurations c = new MainConfigurations("main.properties");
 		if (!c.isError()) {
-			SSHConnection masterCon = createMaster(c);
+//			SSHConnection masterCon = createMaster(c);
 			if (mainError) {
 				System.out.println("Failed to create server, terminating process !");
 				System.exit(-1);
@@ -64,7 +64,4 @@ public class Main {
 		}
 		return con;
 	}
-	
-	
-
 }

@@ -50,7 +50,7 @@ public class Client {
 	
 	public Client (String fileName) throws RemoteException, NotBoundException {
 		cc = new ClientConfigurations (fileName);
-		masterServer = (MasterServerClientInterface) getMasterObject (cc.getMasterAdd(), cc.getMasterPort());
+		masterServer = getMasterObject (cc.getMasterAdd(), cc.getMasterPort());
 		transComOrAb = new HashMap<>();
 		transMsgs = new HashMap<>();
 		abortedTrans = new HashSet<Integer>();
