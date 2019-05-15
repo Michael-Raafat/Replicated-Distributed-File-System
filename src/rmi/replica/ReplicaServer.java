@@ -2,6 +2,7 @@ package rmi.replica;
 
 import data.FileContent;
 import data.ReplicaLoc;
+import data.TransactionMsg;
 import exceptions.MessageNotFoundException;
 
 import java.io.*;
@@ -11,6 +12,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInterface,
@@ -27,7 +30,9 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     private Map<String, List<ReplicaServer>> sameFileReplicas;
     private Map<String, ReentrantReadWriteLock> locks;
     private Map<Long, String> transactionFiles;
+    private Map<String, Set<Long>> runningTransactions;
     private Map<Long, Map<Long, String>> transactionWrites;
+    private Lock metaLock;
 
     public ReplicaServer(ReplicaLoc loc) {
         this.loc = loc;
@@ -37,6 +42,8 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         this.locks = new ConcurrentHashMap<>();
         this.transactionFiles = new HashMap<>();
         this.transactionWrites = new TreeMap<>();
+        this.runningTransactions = new HashMap<>();
+        this.metaLock = new ReentrantLock(true);
         createDirectory();
     }
 
@@ -58,31 +65,22 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     }
 
     @Override
-    public void acquireLock(String fileName) throws RemoteException {
+    public boolean updateReplicas(String fileName, List<String> writes) throws RemoteException, IOException {
         locks.get(fileName).writeLock().lock();
-    }
-
-    @Override
-    public boolean updateReplicas(String fileName, Map<Long, String> writes) throws RemoteException, IOException {
         File file = new File(path + "/" + fileName);
         if (!file.exists()) {
             file.createNewFile();
         }
         FileWriter fileWriter = new FileWriter(file);
-        for (Map.Entry<Long, String> entry : writes.entrySet()) {
-            fileWriter.append(entry.getValue());
+        for (String write : writes) {
+            fileWriter.append(write);
         }
         fileWriter.close();
+        locks.get(fileName).writeLock().unlock();
         return true;
     }
 
-    @Override
-    public void releaseLock(String fileName) throws RemoteException {
-        locks.get(fileName).writeLock().unlock();
-    }
-
-    @Override
-    public void createFile(String fileName) throws RemoteException {
+    private void initializeFileLock(String fileName) throws RemoteException {
         synchronized (locks) {
             if (!locks.containsKey(fileName)) {
                 locks.put(fileName, new ReentrantReadWriteLock());
@@ -90,13 +88,40 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         }
     }
 
-    @Override
-    public void setAsPrimary(String fileName, List<ReplicaLoc> locations) throws RemoteException {
+    private boolean addTransactionToFile(String filename, Long transactionId) {
+    	Boolean allowed = true;
+    	this.metaLock.lock();
+    	if (!runningTransactions.containsKey(filename)) {
+    		runningTransactions.put(filename, new HashSet<Long>());
+    	} else {
+    		allowed = runningTransactions.get(filename).size() == 1 && runningTransactions.get(filename).contains(transactionId);
+    	}
+    	if (allowed) {
+    		runningTransactions.get(filename).add(transactionId);
+    	}
+    	this.metaLock.unlock();
+    	return allowed;
+    }
+    
+    private boolean checkConccurencyToFile(String filename, Long transactionId) {
+    	Boolean allowed = true;
+    	this.metaLock.lock();
+    	if (runningTransactions.containsKey(filename)) {
+    		allowed = runningTransactions.get(filename).size() == 1 && runningTransactions.get(filename).contains(transactionId);
+    	}
+    	this.metaLock.unlock();
+    	return allowed;
+    }
+    
+    private void removeTransactionToFile(String filename, Long transactionId) {
+    	this.metaLock.lock();
+    	runningTransactions.get(filename).remove(transactionId);
+    	this.metaLock.unlock();
+    }
+    
+    private void setAsPrimary(String fileName, List<ReplicaLoc> locations) throws RemoteException {
         List<ReplicaServer> replicaServers = new ArrayList<>();
         for (ReplicaLoc replicaLoc : locations) {
-//            if (replicaLoc.getId() == this.loc.getId()) {
-//                continue;
-//            }
             replicaServers.add(getReplicaServer(replicaLoc));
         }
         sameFileReplicas.put(fileName, replicaServers);
@@ -116,34 +141,6 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     @Override
     public boolean isAlive() throws RemoteException {
         return true;
-    }
-
-    @Override
-    public Boolean write(long transactionId, long messageSequenceNumber, FileContent data) throws RemoteException, IOException {
-        String fileName = data.getFilename();
-        if (!transactionFiles.containsKey(transactionId)) {
-            transactionFiles.put(transactionId, fileName);
-            transactionWrites.put(transactionId, new TreeMap<Long, String>());
-        }
-        transactionWrites.get(transactionId).put(messageSequenceNumber, data.getData());
-        return true;
-    }
-
-    @Override
-    public FileContent read(long transactionId, String fileName) throws FileNotFoundException, IOException, RemoteException {
-        File file = new File(path + "/" + fileName);
-        if (transactionWrites.containsKey(transactionId)) {
-            String initialContent = getFileContent(fileName);
-            String unCommittedContent = getUnCommittedContent(transactionWrites.get(transactionId));
-            return new FileContent(fileName, initialContent + unCommittedContent);
-        }
-
-        if (!file.exists()) {
-            throw new FileNotFoundException();
-        }
-
-        String data = getFileContent(fileName);
-        return new FileContent(fileName, data);
     }
 
     private String getUnCommittedContent(Map<Long, String> transactionWrites) {
@@ -168,6 +165,7 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     private String getContentFromFile(File file) throws IOException {
         StringBuilder builder = new StringBuilder();
         FileReader fileStream = new FileReader(file);
+        
         BufferedReader bufferedReader = new BufferedReader(fileStream);
         String line = null;
         while ((line = bufferedReader.readLine()) != null) {
@@ -178,26 +176,86 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         return builder.toString();
     }
 
+    private List<String> getListFromMapValues(Map<Long, String> map) {
+        List<String> writes = new ArrayList<>();
+        for (Map.Entry<Long, String> entry : map.entrySet()) {
+            writes.add(entry.getValue());
+        }
+        return writes;
+    }
+
     @Override
-    public boolean commit(long transactionId, long numOfMessages) throws MessageNotFoundException, IOException {
-        Map<Long, String> writes = transactionWrites.get(transactionId);
-        if (writes.entrySet().size() != numOfMessages) {
-            throw new MessageNotFoundException();
+    public Boolean write(TransactionMsg transactionMsg, long msgSeqNum, FileContent data) throws RemoteException, IOException {
+        initializeFileLock(data.getFilename());
+        initializeSameFileReplicas(transactionMsg, data.getFilename());
+        String fileName = data.getFilename();
+        Long transactionId = transactionMsg.getTransactionId();
+        boolean allowed = addTransactionToFile(fileName, transactionId);
+        if (!allowed) {
+        	return false;
         }
-        String fileName = transactionFiles.get(transactionId);
-        List<ReplicaServer> replicas = sameFileReplicas.get(fileName);
-        for (ReplicaServer replica : replicas) {
-            replica.acquireLock(fileName);
-            replica.updateReplicas(fileName, transactionWrites.get(transactionId));
-            replica.releaseLock(fileName);
+        if (!transactionFiles.containsKey(transactionId)) {
+            transactionFiles.put(transactionId, fileName);
+            transactionWrites.put(transactionId, new TreeMap<Long, String>());
         }
-        transactionWrites.remove(transactionId);
-        transactionFiles.remove(transactionId);
+        transactionWrites.get(transactionId).put(msgSeqNum, data.getData());
         return true;
     }
 
     @Override
-    public boolean abort(long transactionId) throws RemoteException {
+    public FileContent read(TransactionMsg transactionMsg, long msgSeqNum, String fileName) throws FileNotFoundException, IOException, RemoteException {
+        initializeFileLock(fileName);
+        initializeSameFileReplicas(transactionMsg, fileName);
+        Long transactionId = transactionMsg.getTransactionId();
+        boolean allowed = checkConccurencyToFile(fileName, transactionId);
+        if (!allowed) {
+        	return new FileContent(true);
+        }
+        File file = new File(path + "/" + fileName);
+        if (transactionWrites.containsKey(transactionId)) {
+            String initialContent = getFileContent(fileName);
+            String unCommittedContent = getUnCommittedContent(transactionWrites.get(transactionId));
+            return new FileContent(fileName, initialContent + unCommittedContent);
+        }
+
+        if (!file.exists()) {
+            throw new FileNotFoundException();
+        }
+
+        String data = getFileContent(fileName);
+        return new FileContent(fileName, data);
+    }
+
+    private void initializeSameFileReplicas(TransactionMsg transactionMsg, String fileName) throws RemoteException {
+        synchronized (sameFileReplicas) {
+            if (!sameFileReplicas.containsKey(fileName)) {
+                setAsPrimary(fileName, transactionMsg.getReplicas());
+            }
+        }
+    }
+
+    @Override
+    public boolean commit(TransactionMsg transactionMsg) throws MessageNotFoundException, IOException {
+        Long transactionId = transactionMsg.getTransactionId();
+        removeTransactionToFile(transactionFiles.get(transactionId), transactionId);
+        if (transactionFiles.containsKey(transactionId)) {
+            Map<Long, String> writes = transactionWrites.get(transactionId);
+            String fileName = transactionFiles.get(transactionId);
+            List<ReplicaServer> replicas = sameFileReplicas.get(fileName);
+            for (ReplicaServer replica : replicas) {
+                List<String> writeMessages = getListFromMapValues(writes);
+                replica.updateReplicas(fileName, writeMessages);
+            }
+            transactionWrites.remove(transactionId);
+            transactionFiles.remove(transactionId);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean abort(TransactionMsg transactionMsg) throws RemoteException {
+        Long transactionId = transactionMsg.getTransactionId();
+        removeTransactionToFile(transactionFiles.get(transactionId), transactionId);
         transactionWrites.remove(transactionId);
         transactionFiles.remove(transactionId);
         return true;

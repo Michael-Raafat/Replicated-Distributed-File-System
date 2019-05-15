@@ -1,7 +1,8 @@
 package rmi.master;
 
+import data.FileMeta;
 import data.ReplicaLoc;
-import data.WriteMsg;
+import data.TransactionMsg;
 import utils.FilesMetaManager;
 
 import java.io.FileNotFoundException;
@@ -21,21 +22,16 @@ public class Master implements MasterServerClientInterface {
     }
 
     @Override
-    public List<ReplicaLoc> read(String fileName) throws IOException, RemoteException {
-        return this.filesMetaManager.getFileMeta(fileName).getReplicasLoc();
-    }
-
-    @Override
-    public WriteMsg write(String fileName) throws FileNotFoundException, RemoteException, IOException {
-        ReplicaLoc replicaLoc;
+    public TransactionMsg request_transaction(String fileName) throws IOException, RemoteException {
+        FileMeta fileMeta;
         try {
-           replicaLoc = this.filesMetaManager.getFileMeta(fileName).getMainReplica();
+            fileMeta = this.filesMetaManager.getFileMeta(fileName);
         } catch (FileNotFoundException e) {
             filesMetaManager.addNewFile(fileName);
-            replicaLoc = this.filesMetaManager.getFileMeta(fileName).getMainReplica();
+            fileMeta = this.filesMetaManager.getFileMeta(fileName);
         }
 
-        return new WriteMsg(seq.incrementAndGet(), System.currentTimeMillis(),
-                replicaLoc);
+        return new TransactionMsg(seq.incrementAndGet(), System.currentTimeMillis(),
+                fileMeta.getMainReplica(), fileMeta.getReplicasLoc());
     }
 }

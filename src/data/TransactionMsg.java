@@ -13,7 +13,7 @@ public class TransactionMsg {
 	/**
 	 * List of replicas locations.
 	 */
-	List<ReplicaLoc> replicas;
+	private List<ReplicaLoc> replicas;
 	
 	public TransactionMsg(long transactionId, long timeStamp, ReplicaLoc loc, List<ReplicaLoc> replicas) {
 		this.transactionId = transactionId;
