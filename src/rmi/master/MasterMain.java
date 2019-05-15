@@ -1,5 +1,6 @@
 package rmi.master;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -9,7 +10,9 @@ import java.util.List;
 import args.Args;
 import args.ReplicaArgs;
 import data.ReplicaLoc;
+import rmi.replica.ReplicaServer;
 import rmi.replica.ReplicaServerMasterInterface;
+import utils.RMIUtils;
 import utils.ReplicasLocManager;
 import utils.SSHConnection;
 
@@ -69,10 +72,19 @@ public class MasterMain {
     private static void startHeartBeats() {
 		ReplicasLocManager repLManager = ReplicasLocManager.getInstance();
 		List<ReplicaLoc> replicas = repLManager.getReplicasLocs();
-		List<ReplicaServerMasterInterface> replicasInterface = new ArrayList<>();
+		List<ReplicaServerMasterInterface> replicasServer = new ArrayList<>();
+		RMIUtils rmiUtils = new RMIUtils();
 		for (ReplicaLoc replica : replicas) {
-			// TODO get replica and add it to list
+			try {
+				replicasServer.add((ReplicaServerMasterInterface) rmiUtils.getReplicaServer(replica));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
+
+		HeartBeats heartBeats = new HeartBeats(replicasServer);
+		Thread thread = new Thread(heartBeats);
+		thread.start();
 	}
     
     private static SSHConnection startReplicas() {

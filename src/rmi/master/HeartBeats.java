@@ -1,5 +1,6 @@
 package rmi.master;
 
+import rmi.replica.ReplicaServer;
 import rmi.replica.ReplicaServerMasterInterface;
 
 import java.io.IOException;
