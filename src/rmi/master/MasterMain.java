@@ -25,10 +25,9 @@ import utils.SSHConnection;
  * Tuesday, 07 May 2019
  */
 public class MasterMain {
-	private static String USER_NAME = "admin";
-	private static String PASSWORD = "admin";
+	private static String USER_NAME = "amrnasr";
+	private static String PASSWORD = "a1s2d3f4";
 	private static int port;
-	private static int rmiPort = 1099;
     private static String serverAddress;
     private static String dir;
     private static Registry reg;
@@ -50,9 +49,9 @@ public class MasterMain {
     	System.setProperty("java.rmi.server.hostname",serverAddress);
     	try {
     		controller = new Master(dir);
-    		LocateRegistry.createRegistry(rmiPort);
+    		LocateRegistry.createRegistry(RMIUtils.RMI_PORT);
     		rController = (MasterServerClientInterface) UnicastRemoteObject.exportObject(controller, port);
-    		reg = LocateRegistry.getRegistry(rmiPort);
+    		reg = LocateRegistry.getRegistry(RMIUtils.RMI_PORT);
     		reg.rebind("Master", rController);
     	} catch(Exception e) {
     		e.printStackTrace();

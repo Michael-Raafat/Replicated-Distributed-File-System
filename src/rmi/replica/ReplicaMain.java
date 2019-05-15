@@ -4,7 +4,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Objects;
+
+import utils.RMIUtils;
 
 public class ReplicaMain {
 	private static ReplicaServerGeneralInterface rController;
@@ -25,12 +26,13 @@ public class ReplicaMain {
 	    		dir = args[i + 1];
 	    	}
 		}
-		ReplicaServerGeneralInterface controller = new ReplicaServer(dir);
+		ReplicaServer controller = new ReplicaServer(dir);
 		try {
 			System.setProperty("java.rmi.server.hostname", serverAddress);
-    		LocateRegistry.createRegistry(port);
+    		LocateRegistry.createRegistry(RMIUtils.RMI_PORT);
 			rController = (ReplicaServerGeneralInterface) UnicastRemoteObject.exportObject(controller, port);
-			reg = LocateRegistry.getRegistry(port);
+			reg = LocateRegistry.getRegistry(RMIUtils.RMI_PORT);
+			System.out.println("Registering under name of : " + dir);
 			reg.rebind(dir, rController);
 		} catch (RemoteException e) {
 			e.printStackTrace();

@@ -39,7 +39,6 @@ public class Client {
 	private Set<Integer> abortedTrans;
 	private Set<Integer> comittedTrans;
 	private HashMap<Integer, Integer> requestNums;
-	private static int rmiPort = 1099;
 	
 	public static void main(String[] args) throws NotBoundException, 
 		FileNotFoundException, IOException, MessageNotFoundException {
@@ -206,7 +205,7 @@ public class Client {
 	
 	private MasterServerClientInterface getMasterObject (String ipAddr, String port) throws RemoteException,
 	NotBoundException {
-		Registry registry = LocateRegistry.getRegistry(ipAddr, rmiPort);
+		Registry registry = LocateRegistry.getRegistry(ipAddr, RMIUtils.RMI_PORT);
 		return (MasterServerClientInterface) registry.lookup("Master");
 	}
 
