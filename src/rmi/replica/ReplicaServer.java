@@ -42,7 +42,8 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     private void createDirectory() {
         File file = new File(this.path);
         if (!file.exists()){
-            file.mkdir();
+            boolean flag = file.mkdir();
+            System.out.println("Directory created: " + flag);
         }
     }
 

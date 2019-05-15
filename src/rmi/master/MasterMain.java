@@ -37,13 +37,13 @@ public class MasterMain {
     private static Boolean masterError = false;
     public static void main(String[] args) throws InterruptedException {
     	for (int i = 0; i < args.length; i+= 2) {
-			if (args[i] == "-ip") {
+			if (args[i].equals("-ip")) {
 	    		serverAddress = args[i + 1];
 	    	}
-	    	if (args[i] == "-port") {
+	    	if (args[i].equals("-port")) {
 	    		port = Integer.parseInt(args[i + 1]);
 	    	}
-	    	if (args[i] == "-dir") {
+	    	if (args[i].equals("-dir")) {
 	    		dir = args[i + 1];
 	    	}
 		}
