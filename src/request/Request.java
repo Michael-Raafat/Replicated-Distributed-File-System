@@ -10,4 +10,5 @@ import data.RequestType;
 **/
 public interface Request {
 	public RequestType getType();
+	public int getTransactionNum();
 }

@@ -10,9 +10,11 @@ import data.RequestType;
 **/
 public class ReadRequest implements Request {
 	private String fileName;
+	private int transactionNum;
 	
-	public ReadRequest(String fileName) {
+	public ReadRequest(String fileName, int transactionNum) {
 		this.fileName = fileName;
+		this.transactionNum = transactionNum;
 	}
 
 	@Override
@@ -24,5 +26,9 @@ public class ReadRequest implements Request {
 		return fileName;
 	}
 	
+	@Override
+	public int getTransactionNum() {
+		return transactionNum;
+	}
 	
 }

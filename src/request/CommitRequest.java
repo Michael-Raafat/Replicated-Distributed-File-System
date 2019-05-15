@@ -11,9 +11,11 @@ import data.RequestType;
 public class CommitRequest implements Request {
 	
 	private String fileName;
+	private int transactionNum;
 	
-	public CommitRequest(String fileName) {
+	public CommitRequest(String fileName, int transactionNum) {
 		this.fileName = fileName;
+		this.transactionNum = transactionNum;
 	}
 
 	@Override
@@ -24,5 +26,8 @@ public class CommitRequest implements Request {
 	public String getFileName() {
 		return fileName;
 	}
-
+	@Override
+	public int getTransactionNum() {
+		return transactionNum;
+	}
 }
