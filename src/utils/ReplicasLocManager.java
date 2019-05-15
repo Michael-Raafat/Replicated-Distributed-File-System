@@ -44,7 +44,7 @@ public class ReplicasLocManager {
     }
 
     private ReplicaLoc buildReplicaLoc(String[] tokens) {
-        return new ReplicaLoc(Long.valueOf(tokens[0]), tokens[1], tokens[2], true);
+        return new ReplicaLoc(Long.valueOf(tokens[0]), tokens[1], Integer.parseInt(tokens[2]), true);
     }
 
     List<ReplicaLoc> getRandomReplicas(int count) {

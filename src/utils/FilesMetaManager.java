@@ -53,7 +53,7 @@ public class FilesMetaManager {
         List<ReplicaLoc> replicaLocs = new ArrayList<>();
         for (int i = 1; i < tokens.length; i++) {
             String[] replicaData = tokens[i].split(":");
-            ReplicaLoc replicaLoc = new ReplicaLoc(Long.valueOf(replicaData[0]), replicaData[1], replicaData[2], Boolean.parseBoolean(replicaData[3]));
+            ReplicaLoc replicaLoc = new ReplicaLoc(Long.valueOf(replicaData[0]), replicaData[1], Integer.parseInt(replicaData[2]), Boolean.parseBoolean(replicaData[3]));
             replicaLocs.add(replicaLoc);
         }
 
