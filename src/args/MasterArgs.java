@@ -23,6 +23,6 @@ public class MasterArgs implements Args {
 	}
 	
 	public String toString() {
-		return "-ip " + masterAdd +  "-port " + masterPort + "-dir " +  dirPath;
+		return "-ip " + masterAdd +  " -port " + masterPort + " -dir " +  dirPath;
 	}
 }

@@ -17,8 +17,8 @@ public class Master implements MasterServerClientInterface {
     private FilesMetaManager filesMetaManager;
     private AtomicInteger seq = new AtomicInteger(1);
 
-    public Master() {
-        this.filesMetaManager = FilesMetaManager.getInstance();
+    public Master(String dir) {
+        this.filesMetaManager = FilesMetaManager.getInstance(dir);
     }
 
     @Override

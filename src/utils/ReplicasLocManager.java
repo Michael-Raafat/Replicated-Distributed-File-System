@@ -16,22 +16,28 @@ import java.util.*;
 public class ReplicasLocManager {
     List<ReplicaLoc> replicasLocs;
     private Random rand = new Random();
+    private String dir;
 
-    private static ReplicasLocManager ourInstance = new ReplicasLocManager();
+    private static ReplicasLocManager ourInstance;
 
-    public static ReplicasLocManager getInstance() {
-        return ourInstance;
+    public static ReplicasLocManager getInstance(String dir) {
+    	if (ourInstance == null) {
+    		ourInstance = new ReplicasLocManager(dir);
+    	}
+    	return ourInstance;
     }
 
-    private ReplicasLocManager() {
+    private ReplicasLocManager(String dir) {
         this.replicasLocs = new ArrayList<>();
+        this.dir = dir;
         this.buildReplicasInfo();
     }
 
     private void buildReplicasInfo() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("babies.info"));
+        	String path = dir + "babies.info";
+            reader = new BufferedReader(new FileReader(path));
             String line = reader.readLine();
             while(line != null) {
                 String[] tokens = line.split("\\s+");

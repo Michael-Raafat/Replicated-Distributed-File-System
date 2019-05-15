@@ -49,7 +49,7 @@ public class MasterMain {
 		}
     	System.setProperty("java.rmi.server.hostname",serverAddress);
     	try {
-    		controller = new Master();
+    		controller = new Master(dir);
     		LocateRegistry.createRegistry(rmiPort);
     		rController = (MasterServerClientInterface) UnicastRemoteObject.exportObject(controller, port);
     		reg = LocateRegistry.getRegistry(rmiPort);
@@ -59,7 +59,7 @@ public class MasterMain {
     		System.out.println("Failed to create master RMI object, terminating master !");
 			System.exit(-1);
     	}
-    	startReplicas();
+    	startReplicas(dir);
     	if (masterError) {
 			System.out.println("Failed to create all replicas, terminating master !");
 			System.exit(-1);
@@ -70,7 +70,7 @@ public class MasterMain {
     }
 
     private static void startHeartBeats() {
-		ReplicasLocManager repLManager = ReplicasLocManager.getInstance();
+		ReplicasLocManager repLManager = ReplicasLocManager.getInstance(dir);
 		List<ReplicaLoc> replicas = repLManager.getReplicasLocs();
 		List<ReplicaServerMasterInterface> replicasServer = new ArrayList<>();
 		RMIUtils rmiUtils = new RMIUtils();
@@ -87,9 +87,9 @@ public class MasterMain {
 		thread.start();
 	}
     
-    private static SSHConnection startReplicas() {
+    private static SSHConnection startReplicas(String dir) {
     	SSHConnection con = new SSHConnection();
-    	ReplicasLocManager repLManager = ReplicasLocManager.getInstance();
+    	ReplicasLocManager repLManager = ReplicasLocManager.getInstance(dir);
     	List<ReplicaLoc> replicas = repLManager.getReplicasLocs();
     	for (int i = 0; i < replicas.size(); i++) {
     		try {

@@ -19,9 +19,9 @@ public class FilesMetaManager {
     private static FilesMetaManager filesMetaManager;
     private Hashtable<String, FileMeta> filesMeta;
     private ReplicasLocManager replicasLocManager;
-    private FilesMetaManager(){
+    private FilesMetaManager(String dir){
         this.filesMeta = new Hashtable<>();
-        this.replicasLocManager = ReplicasLocManager.getInstance();
+        this.replicasLocManager = ReplicasLocManager.getInstance(dir);
         readMetasFromDisk();
     }
     private static String META_FILE = "files_meta.txt";
@@ -60,8 +60,8 @@ public class FilesMetaManager {
         return new FileMeta(fileName, replicaLocs, replicaLocs.get(0));
     }
 
-    public static FilesMetaManager getInstance() {
-        if (filesMetaManager == null) filesMetaManager = new FilesMetaManager();
+    public static FilesMetaManager getInstance(String dir) {
+        if (filesMetaManager == null) filesMetaManager = new FilesMetaManager(dir);
         return filesMetaManager;
     }
 
