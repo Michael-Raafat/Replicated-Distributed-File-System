@@ -208,7 +208,7 @@ public class Client {
 		
 		
 		Registry registry = LocateRegistry.getRegistry(ipAddr, Integer.parseInt(port));
-		return (MasterServerClientInterface) registry.lookup("RemoteAccessController");
+		return (MasterServerClientInterface) registry.lookup("Master");
 	}
 
 

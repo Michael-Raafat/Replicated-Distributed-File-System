@@ -53,7 +53,7 @@ public class MasterMain {
     		LocateRegistry.createRegistry(rmiPort);
     		rController = (MasterServerClientInterface) UnicastRemoteObject.exportObject(controller, port);
     		reg = LocateRegistry.getRegistry(rmiPort);
-    		reg.rebind("RemoteAccessController", rController);
+    		reg.rebind("Master", rController);
     	} catch(Exception e) {
     		e.printStackTrace();
     		System.out.println("Failed to create master RMI object, terminating master !");
