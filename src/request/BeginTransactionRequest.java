@@ -17,6 +17,10 @@ public class BeginTransactionRequest implements Request {
 		this.transactionNum = transactionNum;
 		this.fileName = fileName;
 	}
+	
+	public BeginTransactionRequest(int transactionNum) {
+		this.transactionNum = transactionNum;
+	}
 	@Override
 	public RequestType getType() {
 		return RequestType.BEGIN;

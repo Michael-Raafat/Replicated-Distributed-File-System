@@ -47,7 +47,7 @@ public class MasterMain {
 	    		dir = args[i + 1];
 	    	}
 		}
-    	//System.setProperty("java.rmi.server.hostname",serverAddress);
+    	System.setProperty("java.rmi.server.hostname",serverAddress);
     	try {
     		controller = new Master();
     		LocateRegistry.createRegistry(rmiPort);

@@ -11,6 +11,7 @@ import java.util.List;
 import data.RequestType;
 import data.Transaction;
 import request.AbortRequest;
+import request.BeginTransactionRequest;
 import request.CommitRequest;
 import request.ReadRequest;
 import request.Request;
@@ -34,6 +35,7 @@ public class ClientConfigurations {
 		try {
 			lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
 			HashMap<String, String> properties = new HashMap<String, String>();
+			requests = new ArrayList<Request>();
 			for (int i = 0; i < lines.size(); i++) {
 				String s = lines.get(i);
 				int indexU = s.indexOf(" ");
@@ -50,7 +52,7 @@ public class ClientConfigurations {
 					numberOfTransactions = Integer.valueOf(s.substring(s.indexOf(" ") + 1).trim());
 				} else if (s.substring(0, s.indexOf(" ")).trim().contains("T")) {
 					String request = s.substring(s.indexOf(" ") + 1);
-					int indexA = request.indexOf(" ");
+					int indexA = request.indexOf("_");
 					String tInfo = s.substring(0, s.indexOf(" ")).trim();
 					int transactionNum = Integer.parseInt(tInfo.substring(tInfo.indexOf("T") + 1));
 					String requestType;
@@ -61,7 +63,9 @@ public class ClientConfigurations {
 			    			requests.add(new CommitRequest(transactionNum));
 			    		} else if (RequestType.toRequestType(requestType) == RequestType.ABORT){ 
 			    			requests.add(new AbortRequest(transactionNum));
-			    		} else {
+			    		} else if (RequestType.toRequestType(requestType) == RequestType.BEGIN) {
+		    				requests.add(new BeginTransactionRequest(transactionNum));
+		    			} else {
 			    			error = true;
 						    System.out.println("Error! transaction wrong format!");
 						    return;
@@ -94,7 +98,7 @@ public class ClientConfigurations {
 		    			} else if (RequestType.toRequestType(requestType) == RequestType.READ) {
 		    				requests.add(new ReadRequest(fileName, transactionNum));
 		    			} else if (RequestType.toRequestType(requestType) == RequestType.BEGIN) {
-		    				requests.add(new ReadRequest(fileName, transactionNum));
+		    				requests.add(new BeginTransactionRequest(fileName, transactionNum));
 		    			} else {
 		    				error = true;
 					    	System.out.println("Error! missing request format!");
