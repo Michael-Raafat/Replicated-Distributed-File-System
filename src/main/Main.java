@@ -16,7 +16,7 @@ public class Main {
 	public static void main(String[] args) {
 		MainConfigurations c = new MainConfigurations("main.properties");
 		if (!c.isError()) {
-			SSHConnection masterCon =createMaster(c);
+			SSHConnection masterCon = createMaster(c);
 			if (mainError) {
 				System.out.println("Failed to create server, terminating process !");
 				System.exit(-1);
@@ -35,16 +35,15 @@ public class Main {
 	public static SSHConnection createMaster(MainConfigurations c) {
 		// Creating master server.
 		SSHConnection con = new SSHConnection();
-		 try {
+		try {
 			Args args = new MasterArgs(c.getMasterAdd(), c.getMasterPort(), c.getMasterDir());
 			String path = System.getProperty("user.dir");
 			if (con.openConnection(c.getMasterAdd(), c.getMasterPassword(), c.getMasterUsername(), args, path)) {
 				System.out.println("Master Created !");
 			}
-         }catch (Exception e) {
-        	mainError = true;
+		} catch (Exception e) {
+			mainError = true;
 			System.out.println(e.getMessage());
-			
 		}
 		return con;
 	}
