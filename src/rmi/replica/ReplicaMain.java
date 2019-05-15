@@ -1,5 +1,7 @@
 package rmi.replica;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -12,7 +14,7 @@ public class ReplicaMain {
 	private static ReplicaServerGeneralInterface rController;
 	private static Registry reg;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		String serverAddress = "127.0.0.1";
 		int port = 8080;
 		String dir = "";
@@ -27,6 +29,9 @@ public class ReplicaMain {
 	    		dir = args[i + 1];
 	    	}
 		}
+		//PrintStream st = new PrintStream(dir + "log.txt");
+		//System.setOut(st);
+		//System.setErr(st);
 		ReplicaServer controller = new ReplicaServer(dir);
 		try {
 			System.setProperty("java.rmi.server.hostname", serverAddress);
