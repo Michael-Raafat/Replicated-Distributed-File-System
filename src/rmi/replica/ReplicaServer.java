@@ -4,6 +4,7 @@ import data.FileContent;
 import data.ReplicaLoc;
 import data.TransactionMsg;
 import exceptions.MessageNotFoundException;
+import utils.RMIUtils;
 
 import java.io.*;
 import java.rmi.NotBoundException;
@@ -24,6 +25,7 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     private Map<String, Set<Long>> runningTransactions;
     private Map<Long, Map<Long, String>> transactionWrites;
     private Lock metaLock;
+    private RMIUtils rmiUtils;
 
     public ReplicaServer(String path) {
         this.path = path;
@@ -33,6 +35,7 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
         this.transactionWrites = new TreeMap<>();
         this.runningTransactions = new HashMap<>();
         this.metaLock = new ReentrantLock(true);
+        this.rmiUtils = new RMIUtils();
         createDirectory();
     }
 
@@ -41,16 +44,6 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
         if (!file.exists()){
             file.mkdir();
         }
-    }
-
-    private Registry getRegistry(ReplicaLoc loc) {
-        Registry registry = null;
-        try {
-            registry = LocateRegistry.getRegistry(loc.getAddress(), loc.getPort());
-        } catch (RemoteException e) {
-            System.out.println("Unable to get Registry");
-        }
-        return registry;
     }
 
     @Override
@@ -111,19 +104,9 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     private void setAsPrimary(String fileName, List<ReplicaLoc> locations) throws RemoteException {
         List<ReplicaServer> replicaServers = new ArrayList<>();
         for (ReplicaLoc replicaLoc : locations) {
-            replicaServers.add(getReplicaServer(replicaLoc));
+            replicaServers.add(rmiUtils.getReplicaServer(replicaLoc));
         }
         sameFileReplicas.put(fileName, replicaServers);
-    }
-
-    private ReplicaServer getReplicaServer(ReplicaLoc replicaLoc) throws RemoteException {
-        ReplicaServer replicaServer = null;
-        try {
-            replicaServer = (ReplicaServer) getRegistry(replicaLoc).lookup("Replica" + replicaLoc.getId());
-        } catch (NotBoundException e) {
-            System.out.println("NotBoundException for Registry Variable");
-        }
-        return replicaServer;
     }
 
     @Override
