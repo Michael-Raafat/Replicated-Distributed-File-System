@@ -1,12 +1,8 @@
 package rmi.master;
 
-import rmi.replica.ReplicaServer;
 import rmi.replica.ReplicaServerMasterInterface;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.rmi.RemoteException;
-import java.rmi.server.RMISocketFactory;
 import java.util.List;
 
 /**

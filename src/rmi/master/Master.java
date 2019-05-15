@@ -1,15 +1,12 @@
 package rmi.master;
 
 import data.FileMeta;
-import data.ReplicaLoc;
 import data.TransactionMsg;
 import utils.FilesMetaManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Master implements MasterServerClientInterface {

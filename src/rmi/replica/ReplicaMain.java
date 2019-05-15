@@ -29,9 +29,9 @@ public class ReplicaMain {
 	    		dir = args[i + 1];
 	    	}
 		}
-		//PrintStream st = new PrintStream(dir + "log.txt");
-		//System.setOut(st);
-		//System.setErr(st);
+		PrintStream st = new PrintStream(dir + "log.txt");
+		System.setOut(st);
+		System.setErr(st);
 		ReplicaServer controller = new ReplicaServer(dir);
 		try {
 			System.setProperty("java.rmi.server.hostname", serverAddress);
