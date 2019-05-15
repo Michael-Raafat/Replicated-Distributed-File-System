@@ -112,14 +112,14 @@ public class Client {
 	
 	public FileContent read(String fileName) throws FileNotFoundException,
 		RemoteException, IOException, NotBoundException {
-
-		List<ReplicaLoc> allReplicaAddresses = masterServer.read(fileName);
+		TransactionMsg masterResponse = masterServer.request_transaction(fileName);
+		List<ReplicaLoc> allReplicaAddresses = masterResponse.getReplicas();
 		ReplicaLoc primaryReplicaAddress = allReplicaAddresses.get(0);
 		
 		ReplicaServerClientInterface primaryReplica = 
 				(ReplicaServerClientInterface) getReplicaObject(primaryReplicaAddress);
 		// TODO: change transaction id to be dynamic from master server.
-		FileContent file = primaryReplica.read(1, fileName);
+		FileContent file = primaryReplica.read(masterResponse, 1, fileName);
 		return file;
 	}
 	
@@ -132,7 +132,7 @@ public class Client {
 
 		System.out.println("Send Write Request to Master Server");
 		
-		TransactionMsg masterResponse = masterServer.write(fileName);
+		TransactionMsg masterResponse = masterServer.request_transaction(fileName);
 
 		System.out.println("Get the Primary Replica : ( "
 				+ masterResponse.getLoc().toString() + " )");
@@ -145,7 +145,7 @@ public class Client {
 							+ masterResponse.getTransactionId()
 							+ ", msgSequenceNum : "
 							+ i);
-			primaryReplica.write(masterResponse.getTransactionId(), i, data.get(i));
+			primaryReplica.write(masterResponse, i, data.get(i));
 		}
 		System.out.println("Finished .. Return .. Ready to Commit ");
 		return new Entry <ReplicaServerClientInterface, Long>(primaryReplica,
