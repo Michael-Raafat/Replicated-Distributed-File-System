@@ -16,9 +16,10 @@ public class WriteRequest implements Request {
 	private List<String> data;
 	private int transactionNum;
 	
-	public WriteRequest(String fileName, List<String> data) {
+	public WriteRequest(String fileName, List<String> data, int transactionNum) {
 		this.fileName = fileName;
 		this.data = data;
+		this.transactionNum = transactionNum;
 	}
 	
 	@Override
@@ -34,6 +35,7 @@ public class WriteRequest implements Request {
 		return data;
 	}
 	
+	@Override
 	public int getTransactionNum() {
 		return transactionNum;
 	}

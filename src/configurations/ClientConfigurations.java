@@ -13,6 +13,7 @@ import data.Transaction;
 import request.AbortRequest;
 import request.CommitRequest;
 import request.ReadRequest;
+import request.Request;
 import request.WriteRequest;
 /**
 * CS 432: Distributed Systems.
@@ -27,6 +28,7 @@ public class ClientConfigurations {
 	private String masterPort;
 	private int numberOfTransactions;
 	private List<Transaction> transactions;
+	private List<Request> requests;
 	public ClientConfigurations(String filename) {
 		List<String> lines = Collections.emptyList();
 		try {
@@ -155,5 +157,8 @@ public class ClientConfigurations {
 		return transactions;
 	}
 	
+	public List<Request> getRequest() {
+		return requests;
+	}
 	
 }

@@ -6,7 +6,7 @@ package data;
 * May 12, 2019
 **/
 public enum RequestType {
-	WRITE, READ, COMMIT, ABORT;
+	WRITE, READ, COMMIT, ABORT, BEGIN;
 	
 	public static RequestType toRequestType(String s) {
 		if (s.equals("R")) {
@@ -17,6 +17,8 @@ public enum RequestType {
 			return COMMIT;
 		} else if (s.equals("A")) {
 			return ABORT;
+		} else if (s.equals("B")) {
+			return BEGIN;
 		}
 		return null;
 	}
