@@ -82,7 +82,7 @@ public class MainConfigurations {
 			clientAdds = new String[numberOfClients];
 			for (int i = 0; i < numberOfClients; i++) {
 				if (properties.containsKey("client" + i + ".file")) {
-					filePaths[i] = properties.get("client" + i ).trim();
+					filePaths[i] = properties.get("client" + i + ".file").trim();
 				} else {
 					error = true;
 			    	System.out.println("Error! missing file path of client!");
