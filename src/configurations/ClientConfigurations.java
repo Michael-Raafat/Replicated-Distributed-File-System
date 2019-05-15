@@ -36,7 +36,66 @@ public class ClientConfigurations {
 			HashMap<String, String> properties = new HashMap<String, String>();
 			for (int i = 0; i < lines.size(); i++) {
 				String s = lines.get(i);
-				properties.put(s.substring(0, s.indexOf("=")), s.substring(s.indexOf("=") + 1));
+				int indexU = s.indexOf(" ");
+	    		if (indexU == -1) {
+	    			error = true;
+				    System.out.println("Error! wrong command format!");
+				    return;
+	    		}
+				if (s.substring(0, s.indexOf(" ")).trim().equals("master.port")) {
+					masterPort = s.substring(s.indexOf(" ") + 1).trim();
+				} else if (s.substring(0, s.indexOf(" ")).trim().equals("master.ip")) {
+					masterAdd = s.substring(s.indexOf(" ") + 1).trim();
+				} else if (s.substring(0, s.indexOf(" ")).trim().equals("TransactionsNum")) {
+					numberOfTransactions = Integer.valueOf(s.substring(s.indexOf(" ") + 1).trim());
+				} else if (s.substring(0, s.indexOf(" ")).trim().contains("T")) {
+					String request = s.substring(s.indexOf(" ") + 1);
+					int indexA = request.indexOf(" ");
+					String tInfo = s.substring(0, s.indexOf(" ")).trim();
+					int transactionNum = Integer.parseInt(tInfo.substring(tInfo.indexOf("T") + 1));
+					String requestType;
+		    		if (indexA == -1) {
+		    			indexA = request.length();
+		    			requestType = request.substring(0, indexA).trim();
+		    			if (RequestType.toRequestType(requestType) == RequestType.COMMIT) {
+			    			requests.add(new CommitRequest(transactionNum));
+			    		} else if (RequestType.toRequestType(requestType) == RequestType.ABORT){ 
+			    			requests.add(new AbortRequest(transactionNum));
+			    		} else {
+			    			error = true;
+						    System.out.println("Error! transaction wrong format!");
+						    return;
+			    		}
+		    		} else {
+		    			requestType = request.substring(0, indexA).trim();
+		    			int indexB = request.indexOf("_");
+	    				if (indexB == -1) {
+	    					error = true;
+					    	System.out.println("Error! request wrong format!");
+					    	return;
+	    				}
+	    				String fileName = request.substring(request.indexOf("_") + 1).trim();
+						if (RequestType.toRequestType(requestType) == RequestType.COMMIT) {
+		    				requests.add(new CommitRequest(fileName, transactionNum));
+		    			} else if (RequestType.toRequestType(requestType) == RequestType.ABORT){ 
+		    				requests.add(new AbortRequest(fileName, transactionNum));
+		    			} else if (RequestType.toRequestType(requestType) == RequestType.WRITE) {
+			    			requests.add(new WriteRequest(fileName, ,transactionNum));
+		    			} else if (RequestType.toRequestType(requestType) == RequestType.READ) {
+		    				requests.add(new ReadRequest(fileName, transactionNum));
+		    			} else if (RequestType.toRequestType(requestType) == RequestType.BEGIN) {
+		    				requests.add(new ReadRequest(fileName, transactionNum));
+		    			} else {
+		    				error = true;
+					    	System.out.println("Error! missing request format!");
+					    	return;
+		    			}
+		    		}
+		    	} else {
+		    		error = true;
+				    System.out.println("Error! wrong command format!");
+				    return;
+				}
 			}
 			/*if (properties.containsKey("master.server.port")) {
 				masterPort = properties.get("master.server.port");

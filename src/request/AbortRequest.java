@@ -17,6 +17,10 @@ public class AbortRequest implements Request {
 		this.fileName = fileName;
 		this.transactionNum = transactionNum;
 	}
+	
+	public AbortRequest(int transactionNum) {
+		this.transactionNum = transactionNum;
+	}
 
 	@Override
 	public RequestType getType() {

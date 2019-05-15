@@ -16,6 +16,8 @@ public class ReadRequest implements Request {
 		this.fileName = fileName;
 		this.transactionNum = transactionNum;
 	}
+	
+	
 
 	@Override
 	public RequestType getType() {

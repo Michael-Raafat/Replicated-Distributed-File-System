@@ -18,6 +18,9 @@ public class CommitRequest implements Request {
 		this.transactionNum = transactionNum;
 	}
 
+	public CommitRequest(int transactionNum) {
+		this.transactionNum = transactionNum;
+	}
 	@Override
 	public RequestType getType() {
 		return RequestType.COMMIT;
