@@ -10,10 +10,12 @@ import data.RequestType;
 **/
 public class BeginTransactionRequest implements Request {
 
+	private String fileName;
 	private int transactionNum;
 
-	public BeginTransactionRequest(int transactionNum) {
+	public BeginTransactionRequest(String fileName, int transactionNum) {
 		this.transactionNum = transactionNum;
+		this.fileName = fileName;
 	}
 	@Override
 	public RequestType getType() {
@@ -23,6 +25,10 @@ public class BeginTransactionRequest implements Request {
 	@Override
 	public int getTransactionNum() {
 		return transactionNum;
+	}
+	
+	public String getFileName() {
+		return fileName;
 	}
 	
 }

@@ -38,7 +38,7 @@ public class ClientConfigurations {
 				String s = lines.get(i);
 				properties.put(s.substring(0, s.indexOf("=")), s.substring(s.indexOf("=") + 1));
 			}
-			if (properties.containsKey("master.server.port")) {
+			/*if (properties.containsKey("master.server.port")) {
 				masterPort = properties.get("master.server.port");
 			} else {
 				error = true;
@@ -125,7 +125,7 @@ public class ClientConfigurations {
 					}
 				}
 				
-			}
+			}*/
 		} catch (Exception e) { 
 			error = true;
 	    	e.printStackTrace();
