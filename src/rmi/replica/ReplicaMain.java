@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
 
 public class ReplicaMain {
 	private static ReplicaServerGeneralInterface rController;
@@ -14,19 +15,19 @@ public class ReplicaMain {
 		int port = 8080;
 		String dir = "";
 		for (int i = 0; i < args.length; i+= 2) {
-			if (args[i] == "-ip") {
+			if (args[i].equals("-ip")) {
 	    		serverAddress = args[i + 1];
 	    	}
-	    	if (args[i] == "-port") {
+	    	if (args[i].equals("-port")) {
 	    		port = Integer.parseInt(args[i + 1]);
 	    	}
-	    	if (args[i] == "-dir") {
+	    	if (args[i].equals("-dir")) {
 	    		dir = args[i + 1];
 	    	}
 		}
 		ReplicaServerGeneralInterface controller = new ReplicaServer(dir);
 		try {
-    		System.setProperty("java.rmi.server.hostname",serverAddress);
+    		System.setProperty("java.rmi.server.hostname", serverAddress);
     		LocateRegistry.createRegistry(port);
 			rController = (ReplicaServerGeneralInterface) UnicastRemoteObject.exportObject(controller, port);
 			reg = LocateRegistry.getRegistry(port);
