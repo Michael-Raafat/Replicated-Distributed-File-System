@@ -39,6 +39,7 @@ public class Client {
 	private Set<Integer> abortedTrans;
 	private Set<Integer> comittedTrans;
 	private HashMap<Integer, Integer> requestNums;
+	private static int rmiPort = 1099;
 	
 	public static void main(String[] args) throws NotBoundException, 
 		FileNotFoundException, IOException, MessageNotFoundException {
@@ -207,7 +208,7 @@ public class Client {
 	NotBoundException {
 		
 		
-		Registry registry = LocateRegistry.getRegistry(ipAddr, Integer.parseInt(port));
+		Registry registry = LocateRegistry.getRegistry(ipAddr, rmiPort);
 		return (MasterServerClientInterface) registry.lookup("RemoteAccessController");
 	}
 

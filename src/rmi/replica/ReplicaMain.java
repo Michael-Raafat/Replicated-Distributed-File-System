@@ -9,6 +9,7 @@ import java.util.Objects;
 public class ReplicaMain {
 	private static ReplicaServerGeneralInterface rController;
 	private static Registry reg;
+	private static int rmiPort = 1099;
 	
 	public static void main(String[] args) {
 		String serverAddress = "127.0.0.1";
@@ -28,9 +29,9 @@ public class ReplicaMain {
 		ReplicaServerGeneralInterface controller = new ReplicaServer(dir);
 		try {
     		System.setProperty("java.rmi.server.hostname", serverAddress);
-    		LocateRegistry.createRegistry(port);
+    		LocateRegistry.createRegistry(rmiPort);
 			rController = (ReplicaServerGeneralInterface) UnicastRemoteObject.exportObject(controller, port);
-			reg = LocateRegistry.getRegistry(port);
+			reg = LocateRegistry.getRegistry(rmiPort);
 			reg.rebind(dir, rController);
 		} catch (RemoteException e) {
 			e.printStackTrace();

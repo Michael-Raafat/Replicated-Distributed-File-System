@@ -9,6 +9,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class RMIUtils {
+	private static int rmiPort = 1099;
+	
     public ReplicaServer getReplicaServer(ReplicaLoc replicaLoc) throws RemoteException {
         ReplicaServer replicaServer = null;
         try {
@@ -22,7 +24,7 @@ public class RMIUtils {
     private Registry getRegistry(ReplicaLoc loc) {
         Registry registry = null;
         try {
-            registry = LocateRegistry.getRegistry(loc.getAddress(), loc.getPort());
+            registry = LocateRegistry.getRegistry(loc.getAddress(), rmiPort);
         } catch (RemoteException e) {
             System.out.println("Unable to get Registry");
         }
