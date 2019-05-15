@@ -89,6 +89,7 @@ public class Client {
 			switch (t.getType()) {
 				case BEGIN:
 					BeginTransactionRequest br = (BeginTransactionRequest) t;
+					System.out.println("file : " + br.getFileName());
 					TransactionMsg msg = masterServer.request_transaction(br.getFileName());
 					transMsgs.put(br.getTransactionNum(), msg);
 					RMIUtils utils = new RMIUtils();
