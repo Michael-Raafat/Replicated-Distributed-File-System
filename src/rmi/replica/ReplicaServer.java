@@ -12,6 +12,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInterface,
@@ -28,7 +30,9 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     private Map<String, List<ReplicaServer>> sameFileReplicas;
     private Map<String, ReentrantReadWriteLock> locks;
     private Map<Long, String> transactionFiles;
+    private Map<String, Set<Long>> runningTransactions;
     private Map<Long, Map<Long, String>> transactionWrites;
+    private Lock metaLock;
 
     public ReplicaServer(ReplicaLoc loc) {
         this.loc = loc;
@@ -38,6 +42,8 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         this.locks = new ConcurrentHashMap<>();
         this.transactionFiles = new HashMap<>();
         this.transactionWrites = new TreeMap<>();
+        this.runningTransactions = new HashMap<>();
+        this.metaLock = new ReentrantLock(true);
         createDirectory();
     }
 
@@ -82,6 +88,37 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         }
     }
 
+    private boolean addTransactionToFile(String filename, Long transactionId) {
+    	Boolean allowed = true;
+    	this.metaLock.lock();
+    	if (!runningTransactions.containsKey(filename)) {
+    		runningTransactions.put(filename, new HashSet<Long>());
+    	} else {
+    		allowed = runningTransactions.get(filename).size() == 1 && runningTransactions.get(filename).contains(transactionId);
+    	}
+    	if (allowed) {
+    		runningTransactions.get(filename).add(transactionId);
+    	}
+    	this.metaLock.unlock();
+    	return allowed;
+    }
+    
+    private boolean checkConccurencyToFile(String filename, Long transactionId) {
+    	Boolean allowed = true;
+    	this.metaLock.lock();
+    	if (runningTransactions.containsKey(filename)) {
+    		allowed = runningTransactions.get(filename).size() == 1 && runningTransactions.get(filename).contains(transactionId);
+    	}
+    	this.metaLock.unlock();
+    	return allowed;
+    }
+    
+    private void removeTransactionToFile(String filename, Long transactionId) {
+    	this.metaLock.lock();
+    	runningTransactions.get(filename).remove(transactionId);
+    	this.metaLock.unlock();
+    }
+    
     private void setAsPrimary(String fileName, List<ReplicaLoc> locations) throws RemoteException {
         List<ReplicaServer> replicaServers = new ArrayList<>();
         for (ReplicaLoc replicaLoc : locations) {
@@ -128,6 +165,7 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     private String getContentFromFile(File file) throws IOException {
         StringBuilder builder = new StringBuilder();
         FileReader fileStream = new FileReader(file);
+        
         BufferedReader bufferedReader = new BufferedReader(fileStream);
         String line = null;
         while ((line = bufferedReader.readLine()) != null) {
@@ -152,6 +190,10 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         initializeSameFileReplicas(transactionMsg, data.getFilename());
         String fileName = data.getFilename();
         Long transactionId = transactionMsg.getTransactionId();
+        boolean allowed = addTransactionToFile(fileName, transactionId);
+        if (!allowed) {
+        	return false;
+        }
         if (!transactionFiles.containsKey(transactionId)) {
             transactionFiles.put(transactionId, fileName);
             transactionWrites.put(transactionId, new TreeMap<Long, String>());
@@ -165,6 +207,10 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
         initializeFileLock(fileName);
         initializeSameFileReplicas(transactionMsg, fileName);
         Long transactionId = transactionMsg.getTransactionId();
+        boolean allowed = checkConccurencyToFile(fileName, transactionId);
+        if (!allowed) {
+        	return new FileContent(true);
+        }
         File file = new File(path + "/" + fileName);
         if (transactionWrites.containsKey(transactionId)) {
             String initialContent = getFileContent(fileName);
@@ -191,6 +237,7 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     @Override
     public boolean commit(TransactionMsg transactionMsg) throws MessageNotFoundException, IOException {
         Long transactionId = transactionMsg.getTransactionId();
+        removeTransactionToFile(transactionFiles.get(transactionId), transactionId);
         if (transactionFiles.containsKey(transactionId)) {
             Map<Long, String> writes = transactionWrites.get(transactionId);
             String fileName = transactionFiles.get(transactionId);
@@ -208,6 +255,7 @@ public class ReplicaServer implements ReplicaInterface, ReplicaServerClientInter
     @Override
     public boolean abort(TransactionMsg transactionMsg) throws RemoteException {
         Long transactionId = transactionMsg.getTransactionId();
+        removeTransactionToFile(transactionFiles.get(transactionId), transactionId);
         transactionWrites.remove(transactionId);
         transactionFiles.remove(transactionId);
         return true;
