@@ -80,7 +80,17 @@ public class ClientConfigurations {
 		    			} else if (RequestType.toRequestType(requestType) == RequestType.ABORT){ 
 		    				requests.add(new AbortRequest(fileName, transactionNum));
 		    			} else if (RequestType.toRequestType(requestType) == RequestType.WRITE) {
-			    			requests.add(new WriteRequest(fileName, ,transactionNum));
+		    				int linesPassed = 1;
+		    				String str = lines.get(i + linesPassed);
+		    				int numOfData = Integer.parseInt(str);
+		    				linesPassed += numOfData;
+		    				List<String> data = new ArrayList<>();
+		    				for (int j = 0; j < numOfData; j++) {
+		    					String dataI = lines.get(j);
+		    					data.add(dataI);
+		    				}
+			    			requests.add(new WriteRequest(fileName, data,transactionNum));
+			    			i += linesPassed;
 		    			} else if (RequestType.toRequestType(requestType) == RequestType.READ) {
 		    				requests.add(new ReadRequest(fileName, transactionNum));
 		    			} else if (RequestType.toRequestType(requestType) == RequestType.BEGIN) {

@@ -4,8 +4,16 @@ TransactionsNum 2
 T1 B
 T1 R_filename1
 T1 W_filename1
+3
+data1
+data2
+data3
 T2 B
 T2 R_filename1
 T2 W_filename1
+3
+data1
+data2
+data3
 T1 A
 T2 C
