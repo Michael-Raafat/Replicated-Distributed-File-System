@@ -17,6 +17,7 @@ public class RMIUtils {
         	String nameRMI = "Replica" + String.valueOf(replicaLoc.getId());
         	System.out.println("Trying to connect to : " + nameRMI);
             replicaServer = (ReplicaServerGeneralInterface) getRegistry(replicaLoc).lookup(nameRMI);
+            System.out.println("Connected to: " + nameRMI);
         } catch (NotBoundException e) {
             System.out.println("NotBoundException for Registry Variable");
         }

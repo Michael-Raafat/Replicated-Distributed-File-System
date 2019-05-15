@@ -49,9 +49,9 @@ public class SSHConnection {
 			}
 			channel=session.openChannel("exec");
 	        ((ChannelExec)channel).setCommand(" cd " + path + " ; java -jar " +
-	        			jar + " " + args.toString() +" ; exit");
+	        			jar + " " + args.toString() +" ;");
 	        System.out.println(" cd " + path + " ; java -jar " +
-	        			jar + " " + args.toString() +" ; exit");
+	        			jar + " " + args.toString() +" ;");
 	        //channel.setInputStream(null);
 	        p = (ChannelExec) channel;
 	        //((ChannelExec)channel).setErrStream(System.err);

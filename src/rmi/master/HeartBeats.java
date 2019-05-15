@@ -27,19 +27,22 @@ public class HeartBeats implements Runnable {
     public void run() {
         while (true) {
             try {
-                Thread.sleep(60000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            int i = 0;
             for (ReplicaServerMasterInterface replica : replicas) {
+                i++;
                 try {
                     replica.isAlive();
+                    System.out.println("Replica" + i + " is alive!");
                 } catch (RemoteException e) {
                     // TODO implement error handling
                     e.printStackTrace();
                 }
             }
+            System.out.println("=========================================================");
         }
     }
 }
