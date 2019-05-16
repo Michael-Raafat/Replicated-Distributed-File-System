@@ -52,7 +52,7 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
         if (!file.exists()) {
             file.createNewFile();
         }
-        FileWriter fileWriter = new FileWriter(file);
+        FileWriter fileWriter = new FileWriter(file, true);
         for (String write : writes) {
             fileWriter.append(write);
         }

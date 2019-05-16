@@ -111,8 +111,8 @@ public class Client {
 							System.out.println("\tServer gives back error due to concurrency");
 							abort(r.getTransactionNum());
 						} else {
-							System.out.println("\tFile Content");
-							System.out.println("\t\"" + file.toString() + "\"");
+							System.out.println("\tFile Content : { ");
+							System.out.println(file.toString() + " } ");
 						}
 					} catch (FileNotFoundException e) {
 						System.out.println("\t" + fn + " doesn't exist in the system.");
@@ -125,7 +125,7 @@ public class Client {
 					List<String> dataLines = w.getData();
 					ArrayList<FileContent> content = new ArrayList<>();
 					for (int k = 0; k < dataLines.size(); k++) {
-						content.add(new FileContent(fn2, dataLines.get(k)));
+						content.add(new FileContent(fn2, dataLines.get(k) + "\n"));
 					}
 					System.out.println("\tRequest Type : Write ... Writing in file " + fn2);
 					boolean succes = write( w.getTransactionNum(), content, fn2);
