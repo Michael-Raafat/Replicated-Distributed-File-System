@@ -75,7 +75,9 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     	if (!runningTransactions.containsKey(filename)) {
     		runningTransactions.put(filename, new HashSet<Long>());
     	} else {
-    		allowed = runningTransactions.get(filename).size() == 1 && runningTransactions.get(filename).contains(transactionId);
+    		allowed = runningTransactions.get(filename).size() == 0
+    				|| (runningTransactions.get(filename).size() == 1 
+    				&& runningTransactions.get(filename).contains(transactionId));
     	}
     	if (allowed) {
     		runningTransactions.get(filename).add(transactionId);
@@ -88,7 +90,9 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     	Boolean allowed = true;
     	this.metaLock.lock();
     	if (runningTransactions.containsKey(filename)) {
-    		allowed = runningTransactions.get(filename).size() == 1 && runningTransactions.get(filename).contains(transactionId);
+    		allowed = runningTransactions.get(filename).size() == 0
+    				|| (runningTransactions.get(filename).size() == 1 
+    				&& runningTransactions.get(filename).contains(transactionId));
     	}
     	this.metaLock.unlock();
     	return allowed;
