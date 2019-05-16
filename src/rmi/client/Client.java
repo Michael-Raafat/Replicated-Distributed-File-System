@@ -41,7 +41,7 @@ public class Client {
 	private HashMap<Integer, Integer> requestNums;
 	
 	public static void main(String[] args) throws NotBoundException, 
-		FileNotFoundException, IOException, MessageNotFoundException {
+		IOException, MessageNotFoundException {
 		Client c = new Client (args[0]);
 		c.start();
 		System.out.println("Client has done all his transactions");
@@ -63,7 +63,7 @@ public class Client {
 		transMsgs.remove(tid);
 		requestNums.remove(tid);
 	}
-	private void start () throws FileNotFoundException, RemoteException,
+	private void start () throws RemoteException,
 		IOException, NotBoundException, MessageNotFoundException {
 		
 		
@@ -101,13 +101,17 @@ public class Client {
 				case READ :
 					ReadRequest r = (ReadRequest) t;
 					System.out.println("Request Type : Read ... Reading file" + r.getFileName());
-					FileContent file = read(r.getTransactionNum(), r.getFileName());
-					if (file.isError()) {
-						System.out.println("Server gives back error due to concurrency");
-						abort(r.getTransactionNum());
-					} else {
-						System.out.println("File Content");
-						System.out.println(file.toString());
+					try {
+						FileContent file = read(r.getTransactionNum(), r.getFileName());
+						if (file.isError()) {
+							System.out.println("Server gives back error due to concurrency");
+							abort(r.getTransactionNum());
+						} else {
+							System.out.println("File Content");
+							System.out.println(file.toString());
+						}
+					} catch (FileNotFoundException e) {
+						System.out.println(r.getFileName() + " doesn't exist in the system.");
 					}
 					break;
 				case WRITE :
