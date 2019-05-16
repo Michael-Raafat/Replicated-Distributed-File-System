@@ -89,7 +89,7 @@ public class ClientConfigurations {
 		    				int numOfData = Integer.parseInt(str);
 		    				linesPassed += numOfData;
 		    				List<String> data = new ArrayList<>();
-		    				for (int j = i; j < numOfData + i; j++) {
+		    				for (int j = i+2; j < numOfData + i+2; j++) {
 		    					String dataI = lines.get(j);
 		    					data.add(dataI);
 		    				}
