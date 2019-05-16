@@ -42,4 +42,9 @@ public class FileContent implements Serializable {
 	public void setData(String data) {
 		this.data = data;
 	}
+	
+	@Override
+	public String toString() {
+		return data;
+	}
 }
