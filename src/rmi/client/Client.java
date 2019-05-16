@@ -65,11 +65,10 @@ public class Client {
 	}
 	private void start () throws RemoteException,
 		IOException, NotBoundException, MessageNotFoundException {
-		
-		
+
 		List<Request> trans = cc.getRequest();
 		for (int i = 0; i < trans.size(); i++) {
-			Request t = trans.get(i);;
+			Request t = trans.get(i);
 			System.out.println("Transaction Number : " + t.getTransactionNum());
 			if (abortedTrans.contains(t.getTransactionNum())) {
 				System.out.println("Transaction was already aborted");

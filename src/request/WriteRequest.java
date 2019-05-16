@@ -24,7 +24,7 @@ public class WriteRequest implements Request {
 	
 	@Override
 	public RequestType getType() {
-		return RequestType.READ;
+		return RequestType.WRITE;
 	}
 
 	public String getFileName() {
