@@ -7,10 +7,7 @@ import exceptions.MessageNotFoundException;
 import utils.RMIUtils;
 
 import java.io.*;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -49,7 +46,8 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
 
     @Override
     public boolean updateReplicas(String fileName, List<String> writes) throws RemoteException, IOException {
-        locks.get(fileName).writeLock().lock();
+    	initializeFileLock(fileName);
+    	locks.get(fileName).writeLock().lock();
         File file = new File(path + "/" + fileName);
         if (!file.exists()) {
             file.createNewFile();
@@ -211,7 +209,6 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     @Override
     public boolean commit(TransactionMsg transactionMsg) throws MessageNotFoundException, IOException {
         Long transactionId = transactionMsg.getTransactionId();
-        removeTransactionToFile(transactionFiles.get(transactionId), transactionId);
         if (transactionFiles.containsKey(transactionId)) {
             Map<Long, String> writes = transactionWrites.get(transactionId);
             String fileName = transactionFiles.get(transactionId);
@@ -220,6 +217,7 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
                 List<String> writeMessages = getListFromMapValues(writes);
                 replica.updateReplicas(fileName, writeMessages);
             }
+            removeTransactionToFile(transactionFiles.get(transactionId), transactionId);
             transactionWrites.remove(transactionId);
             transactionFiles.remove(transactionId);
         }

@@ -39,6 +39,7 @@ public class Client {
 	private Set<Integer> abortedTrans;
 	private Set<Integer> comittedTrans;
 	private HashMap<Integer, Integer> requestNums;
+	private HashMap<Integer, String> transFiles;
 	
 	public static void main(String[] args) throws NotBoundException, 
 		IOException, MessageNotFoundException {
@@ -56,12 +57,14 @@ public class Client {
 		abortedTrans = new HashSet<Integer>();
 		comittedTrans = new HashSet<Integer>();
 		requestNums = new HashMap<>();
+		transFiles = new HashMap<>();
 	}
 	
 	private void cleanUp(int tid) {
 		transComOrAb.remove(tid);
 		transMsgs.remove(tid);
 		requestNums.remove(tid);
+		transFiles.remove(tid);
 	}
 	private void start () throws RemoteException,
 		IOException, NotBoundException, MessageNotFoundException {
@@ -96,12 +99,14 @@ public class Client {
 					requestNums.put(br.getTransactionNum(), 0);
 					System.out.println("\tGet the Primary Replica : ( "
 							+ msg.getLoc().toString() + " )");
+					transFiles.put(br.getTransactionNum(), br.getFileName());
 					break;
 				case READ :
 					ReadRequest r = (ReadRequest) t;
-					System.out.println("\tRequest Type : Read ... Reading file " + r.getFileName());
+					String fn = transFiles.get(r.getTransactionNum());
+					System.out.println("\tRequest Type : Read ... Reading file " + fn);
 					try {
-						FileContent file = read(r.getTransactionNum(), r.getFileName());
+						FileContent file = read(r.getTransactionNum(), fn);
 						if (file.isError()) {
 							System.out.println("\tServer gives back error due to concurrency");
 							abort(r.getTransactionNum());
@@ -110,19 +115,20 @@ public class Client {
 							System.out.println("\t\"" + file.toString() + "\"");
 						}
 					} catch (FileNotFoundException e) {
-						System.out.println("\t" + r.getFileName() + " doesn't exist in the system.");
+						System.out.println("\t" + fn + " doesn't exist in the system.");
 						abort(r.getTransactionNum());
 					}
 					break;
 				case WRITE :
 					WriteRequest w = (WriteRequest) t;
+					String fn2 = transFiles.get(w.getTransactionNum());
 					List<String> dataLines = w.getData();
 					ArrayList<FileContent> content = new ArrayList<>();
 					for (int k = 0; k < dataLines.size(); k++) {
-						content.add(new FileContent(w.getFileName(), dataLines.get(k)));
+						content.add(new FileContent(fn2, dataLines.get(k)));
 					}
-					System.out.println("\tRequest Type : Write ... Writing in file " + w.getFileName());
-					boolean succes = write( w.getTransactionNum(), content, w.getFileName());
+					System.out.println("\tRequest Type : Write ... Writing in file " + fn2);
+					boolean succes = write( w.getTransactionNum(), content, fn2);
 					if (!succes) {
 						System.out.println("\tServer gives back error due to concurrency");
 						abort(w.getTransactionNum());
@@ -130,12 +136,12 @@ public class Client {
 					break;
 				case COMMIT :
 					CommitRequest c = (CommitRequest) t;
-					System.out.println("\tRequest Type : Commit ... Commiting file" + c.getFileName());
+					System.out.println("\tRequest Type : Commit ... Commiting file" + transFiles.get(c.getTransactionNum()));
 					commit(c.getTransactionNum());
 					break;
 				case ABORT :
 					AbortRequest a = (AbortRequest) t;
-					System.out.println("\tRequest Type : Abort ... Aborting file" + a.getFileName());
+					System.out.println("\tRequest Type : Abort ... Aborting file" + transFiles.get(a.getTransactionNum()));
 					abort(a.getTransactionNum());
 					break;
 				
