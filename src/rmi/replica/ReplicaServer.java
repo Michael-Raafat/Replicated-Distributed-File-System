@@ -50,6 +50,7 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     	locks.get(fileName).writeLock().lock();
         File file = new File(path + "/" + fileName);
         if (!file.exists()) {
+        	createDirectory();
             file.createNewFile();
         }
         FileWriter fileWriter = new FileWriter(file, true);
@@ -189,7 +190,12 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
         }
         File file = new File(path + "/" + fileName);
         if (transactionWrites.containsKey(transactionId)) {
-            String initialContent = getFileContent(fileName);
+        	String initialContent = "";
+        	try {
+        		initialContent = getFileContent(fileName);
+        	} catch (FileNotFoundException ex) {
+        		initialContent = "";
+        	}
             String unCommittedContent = getUnCommittedContent(transactionWrites.get(transactionId));
             return new FileContent(fileName, initialContent + unCommittedContent);
         }
