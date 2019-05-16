@@ -98,7 +98,9 @@ public class ReplicaServer implements ReplicaServerGeneralInterface {
     
     private void removeTransactionToFile(String filename, Long transactionId) {
     	this.metaLock.lock();
-    	runningTransactions.get(filename).remove(transactionId);
+    	if (runningTransactions.containsKey(filename)) {
+    		runningTransactions.get(filename).remove(transactionId);
+    	}
     	this.metaLock.unlock();
     }
     

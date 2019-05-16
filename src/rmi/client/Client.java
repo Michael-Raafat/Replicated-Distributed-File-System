@@ -71,46 +71,47 @@ public class Client {
 			Request t = trans.get(i);
 			System.out.println("Transaction Number : " + t.getTransactionNum());
 			if (abortedTrans.contains(t.getTransactionNum())) {
-				System.out.println("Transaction was already aborted");
+				System.out.println("\tTransaction was already aborted");
 				continue;
 			}
 			if (comittedTrans.contains(t.getTransactionNum())) {
-				System.out.println("Transaction was already committed");
+				System.out.println("\tTransaction was already committed");
 				continue;
 			}
 			if (requestNums.containsKey(t.getTransactionNum())) {
-				System.out.println("Request Number : " + requestNums.get(t.getTransactionNum()));
+				System.out.println("\tRequest Number : " + requestNums.get(t.getTransactionNum()));
 			}
 			if (!transComOrAb.containsKey(t.getTransactionNum()) && t.getType() != RequestType.BEGIN) {
-				System.out.println("Invalid transaction number");
+				System.out.println("\tInvalid transaction number");
 				continue;
 			}
 			switch (t.getType()) {
 				case BEGIN:
 					BeginTransactionRequest br = (BeginTransactionRequest) t;
-					System.out.println("file : " + br.getFileName());
+					System.out.println("\tfile : " + br.getFileName());
 					TransactionMsg msg = masterServer.request_transaction(br.getFileName());
 					transMsgs.put(br.getTransactionNum(), msg);
 					RMIUtils utils = new RMIUtils();
 					transComOrAb.put(br.getTransactionNum(), utils.getReplicaServer(msg.getLoc()));
 					requestNums.put(br.getTransactionNum(), 0);
-					System.out.println("Get the Primary Replica : ( "
+					System.out.println("\tGet the Primary Replica : ( "
 							+ msg.getLoc().toString() + " )");
 					break;
 				case READ :
 					ReadRequest r = (ReadRequest) t;
-					System.out.println("Request Type : Read ... Reading file" + r.getFileName());
+					System.out.println("\tRequest Type : Read ... Reading file " + r.getFileName());
 					try {
 						FileContent file = read(r.getTransactionNum(), r.getFileName());
 						if (file.isError()) {
-							System.out.println("Server gives back error due to concurrency");
+							System.out.println("\tServer gives back error due to concurrency");
 							abort(r.getTransactionNum());
 						} else {
-							System.out.println("File Content");
-							System.out.println(file.toString());
+							System.out.println("\tFile Content");
+							System.out.println("\t\"" + file.toString() + "\"");
 						}
 					} catch (FileNotFoundException e) {
-						System.out.println(r.getFileName() + " doesn't exist in the system.");
+						System.out.println("\t" + r.getFileName() + " doesn't exist in the system.");
+						abort(r.getTransactionNum());
 					}
 					break;
 				case WRITE :
@@ -120,21 +121,21 @@ public class Client {
 					for (int k = 0; k < dataLines.size(); k++) {
 						content.add(new FileContent(w.getFileName(), dataLines.get(k)));
 					}
-					System.out.println("Request Type : Write ... Writing in file" + w.getFileName());
+					System.out.println("\tRequest Type : Write ... Writing in file " + w.getFileName());
 					boolean succes = write( w.getTransactionNum(), content, w.getFileName());
 					if (!succes) {
-						System.out.println("Server gives back error due to concurrency");
+						System.out.println("\tServer gives back error due to concurrency");
 						abort(w.getTransactionNum());
 					}
 					break;
 				case COMMIT :
 					CommitRequest c = (CommitRequest) t;
-					System.out.println("Request Type : Commit ... Commiting file" + c.getFileName());
+					System.out.println("\tRequest Type : Commit ... Commiting file" + c.getFileName());
 					commit(c.getTransactionNum());
 					break;
 				case ABORT :
 					AbortRequest a = (AbortRequest) t;
-					System.out.println("Request Type : Abort ... Aborting file" + a.getFileName());
+					System.out.println("\tRequest Type : Abort ... Aborting file" + a.getFileName());
 					abort(a.getTransactionNum());
 					break;
 				
@@ -163,7 +164,7 @@ public class Client {
 		for (int i = 0; i < data.size() && success; i++) {
 			int rnum = requestNums.get(id);
 			System.out
-					.println("Send Write Request to PrimaryReplica : transactionID : "
+					.println("\tSend Write Request to PrimaryReplica : transactionID : "
 							+ msg.getTransactionId()
 							+ ", msgSequenceNum : "
 							+ rnum);
@@ -179,11 +180,11 @@ public class Client {
 			NotBoundException, MessageNotFoundException {
 		TransactionMsg msg = transMsgs.get(id);
 		System.out
-				.println("Send Commit Request to Primary Replica : transactionID : "
-						+ msg.getTransactionId() );
+				.println("\tSend Commit Request to Primary Replica : transactionNum : "
+						+ id );
 		ReplicaServerClientInterface primaryReplica = transComOrAb.get(id);
 		boolean success = primaryReplica.commit(msg);
-		System.out.println(" Commit Response : "
+		System.out.println("\tCommit Response : "
 				+ success);
 		cleanUp(id);
 		if (success) {
@@ -197,11 +198,11 @@ public class Client {
 			NotBoundException, MessageNotFoundException {
 		TransactionMsg msg = transMsgs.get(id);
 		System.out
-				.println("Send Abort Request to Primary Replica : transactionID : "
-						+ msg.getTransactionId());
+				.println("\tSend Abort Request to Primary Replica : transactionNum : "
+						+ id);
 		ReplicaServerClientInterface primaryReplica = transComOrAb.get(id);
 		boolean success = primaryReplica.abort(msg);
-		System.out.println(" Abort Response : "
+		System.out.println("\tAbort Response : "
 				+ success);
 		cleanUp(id);
 		abortedTrans.add(id);
